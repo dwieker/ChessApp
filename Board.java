@@ -124,7 +124,7 @@ public class Board{
             mh.castled(3);
          }
       }
-      else if(Math.abs(squares[m.s1()].getType()) == Piece.ROOK)
+      else if(squares[m.s1()].getType()) == Piece.ROOK || squares[m.s1()].getType()) == Piece.rook)
       {
          if(m.s1() == 7) w_c_rights[0] = false;
          else if(m.s1() == 0) w_c_rights[1] = false;
@@ -138,6 +138,71 @@ public class Board{
       
       return mh;
    }
+   
+   
+   void unmove_piece(struct move_history mh){
+        cur_player *= -1;
+        squares[mh.s1()] = squares[mh.s2()];  //move piece back to previous square
+        squares[mh.s1()].setPos(mh.s1()); //update pieces position
+        squares[mh.s2()] = null; //empty old square
+        b_c_rights = mh.get_b_rights();
+        w_c_rights = mh.get_w_rights();
+        enPassant =  mh.getEnPassant();
+
+
+        if(mh.captured_piece != NULL){
+            squares[mh.captured_piece->pos] = mh.captured_piece;
+
+            if(mh.captured_piece->next != NULL) mh.captured_piece->next->prev  = mh.captured_piece;
+            if(mh.captured_piece->prev != NULL) mh.captured_piece->prev->next  = mh.captured_piece;
+
+        }
+        if(mh.pawn_promotion){
+            squares[mh.old_square]->value = 1*cur_player;
+            if(cur_player == 1)
+                squares[mh.old_square]->letter = 'P';
+            else
+                squares[mh.old_square]->letter = 'p';
+            squares[mh.old_square]->att_def_val = 30;
+            squares[mh.old_square]->piece_score = 100;
+        }
+        else if(mh.did_castle > 0) {
+            if(mh.did_castle == 1){
+                has_castled[0] = false;
+                squares[0] = squares[3];
+                squares[3] = NULL;
+                squares[0]->pos = 0;
+            }
+            else if(mh.did_castle == 2){
+                has_castled[0] = false;
+                squares[7] = squares[5];
+                squares[5] = NULL;
+                squares[7]->pos = 7;
+            }
+            else if(mh.did_castle == 3){
+                has_castled[1] = false;
+                squares[112] = squares[115];
+                squares[115] = NULL;
+                squares[112]->pos = 112;
+            }
+            else if(mh.did_castle == 4){
+                has_castled[1] = false;
+                squares[119] = squares[117];
+                squares[117] = NULL;
+                squares[119]->pos = 119;
+            }
+        }
+        
+    }
+
+    PieceImage* current_player_pieces(){
+        if (cur_player == 1) return white_pieces;
+        else return black_pieces;
+    }
+    
+    PieceImage* check_if_castle(){
+        if(abs(squares[last_move[1]]->value) == 6 && abs(last_move[1] - last_move[0]) == 2){
+            if(last_move[1] - last_m
          
    
    
