@@ -76,7 +76,6 @@ public class Board{
    
    
    public void printFEN(){
-   
       int blanks = 0;
       for(int i = 7; i > -1; i--){
          for(int j = 0; j < 8; j++){
@@ -104,23 +103,19 @@ public class Board{
       //add space
       System.out.print(" ");
       
-      
-      
       //print castle rights  
       if(w_castle_rights[0] || w_castle_rights[1] || b_castle_rights[0] || b_castle_rights[1]){
          if(w_castle_rights[0]) System.out.print("K");
          if(w_castle_rights[1]) System.out.print("Q");
          if(b_castle_rights[0]) System.out.print("k");
-         if(b_castle_rights[1]) System.out.print("q");
-         
+         if(b_castle_rights[1]) System.out.print("q");   
       }
       else
          System.out.print("-");
          
       //add space
       System.out.print(" ");
-
-         
+     
      //to be fixed later...
       System.out.print( "- 0 1" );
    }
