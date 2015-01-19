@@ -59,4 +59,12 @@ public class MoveHistory{
       captured = p;
    }
    
+   public void setPromo(int s){
+	   pawn_promotion = s;
+   }
+   
+   public void castled(int c){
+	   did_castle = c;
+   }
+   
 }

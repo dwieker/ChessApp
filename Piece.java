@@ -60,4 +60,9 @@ public class Piece{
       return type;
    }
    
+   public void setType(int t, char l, int v){
+	   type = t;
+	   letter = l;
+	   value = v;
+   }
 }
