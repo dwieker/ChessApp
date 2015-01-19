@@ -7,27 +7,24 @@ public class Board{
    
    private int cur_player;
    private int move_count;
-   private boolean[] b_castle_rights = new boolean[2]; //first index is king side, second queen side
-   private boolean[] w_castle_rights = new boolean[2];
-   private Move last_move;
+   private boolean[] w_c_rights = new boolean[2]; //first index is king side, second queen side
+   private boolean[] b_c_rights = new boolean[2];
+   private int enPassantSq = -1;
    private Piece[] squares;
-   private LinkedList<Piece> white_pieces, black_pieces;
-   private Piece temp;
-   
+   private LinkedList<Piece> pieces;
+   private Piece wKing;
+   private Piece bKing;
+      
    public Board(String FEN){
       squares = new Piece[128];
-      white_pieces = new LinkedList<Piece>();
-      black_pieces = new LinkedList<Piece>();
-     
-      //fill rest of board with null pieces. value = 0
-      for(int i = 0; i < 128; i++)
-         squares[i] = null;
-         
+      pieces = new LinkedList<Piece>();
+      Piece temp;
+
       //initialize castle rights to false
-      w_castle_rights[0] = false;
-      w_castle_rights[1] = false;
-      b_castle_rights[0] = false;
-      b_castle_rights[1] = false;
+      w_c_rights[0] = false;
+      w_c_rights[1] = false;
+      b_c_rights[0] = false;
+      b_c_rights[1] = false;
       
       
       //Scan FEN
@@ -43,26 +40,26 @@ public class Board{
             i++;
             if(FEN.charAt(i) == 'w') cur_player = WHITE;
             else if(FEN.charAt(i) == 'b') cur_player = BLACK;
-            
-            
+              
             //Read castle rights
             i++; i++;
             while(FEN.charAt(i) != '-'  && FEN.charAt(i) != ' ' ){
-               if(FEN.charAt(i) == 'K') w_castle_rights[0] = true;
-               else if(FEN.charAt(i) == 'Q') w_castle_rights[1] = true;
-               else if(FEN.charAt(i) == 'k') b_castle_rights[0] = true;
-               else if(FEN.charAt(i) == 'q') b_castle_rights[1] = true;
+               if(FEN.charAt(i) == 'K') w_c_rights[0] = true;
+               else if(FEN.charAt(i) == 'Q') w_c_rights[1] = true;
+               else if(FEN.charAt(i) == 'k') b_c_rights[0] = true;
+               else if(FEN.charAt(i) == 'q') b_c_rights[1] = true;
                i++;
             }
             
             break;
-         
          }
          
          else{
             temp = new Piece(FEN.charAt(i), row*16 + col);
-            if(temp.getType() > 0) white_pieces.add(temp);
-            else if(temp.getType() < 0) black_pieces.add(temp);
+            if(temp.letter = "K") wKing = temp;
+            else if(temp.letter = "k") bKing = temp;
+            else pieces.add(temp);
+            
             squares[row*16 + col] = temp;
             col++;
          }
@@ -72,6 +69,21 @@ public class Board{
       }
     
    }
+   
+   
+   public MoveHistory movePiece(Move m){
+   
+    MoveHistory mh = new MoveHistory(m, b_c_rights, w_c_rights, enPassantSq);
+
+    if (squares[m.s1()] != null){
+        move_history.setCaptured(squares[s2]);   
+        pieces.remove(squares[s2]);
+    }
+   
+         
+   
+   
+   
    
    
    
@@ -104,11 +116,11 @@ public class Board{
       System.out.print(" ");
       
       //print castle rights  
-      if(w_castle_rights[0] || w_castle_rights[1] || b_castle_rights[0] || b_castle_rights[1]){
-         if(w_castle_rights[0]) System.out.print("K");
-         if(w_castle_rights[1]) System.out.print("Q");
-         if(b_castle_rights[0]) System.out.print("k");
-         if(b_castle_rights[1]) System.out.print("q");   
+      if(b_c_rights[0] || b_c_rights[1] || b_c_rights[0] || b_c_rights[1]){
+         if(b_c_rights[0]) System.out.print("K");
+         if(b_c_rights[1]) System.out.print("Q");
+         if(b_c_rights[0]) System.out.print("k");
+         if(b_c_rights[1]) System.out.print("q");   
       }
       else
          System.out.print("-");

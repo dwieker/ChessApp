@@ -29,11 +29,18 @@ public class Move{
       
    }
    
-   public void set_score(int s){
+   public void setScore(int s){
       score = s;
    }
    
-   public int get_score(){
+   public int getScore(){
       return score;
+   }
+   
+   public int s1(){
+      return s1;
+  
+   public int s2(){
+      return s2;
    }
 }
