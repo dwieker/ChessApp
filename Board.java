@@ -3,7 +3,7 @@ import java.util.*;
 public class Board{
    static final int WHITE = 1;
    static final int BLACK = -1;
-   static final String start_pos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+   static final String STARTPOS = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
    
    private int cur_player;
    private int move_count;
@@ -76,26 +76,23 @@ public class Board{
       MoveHistory mh = new MoveHistory(m, b_c_rights, w_c_rights, enPassantSq);
       cur_player *= -1;
       int taken;
-   
-      if (squares[m.s1()] != null){
+      if (squares[m.s2()] != null){
          mh.setCaptured(squares[m.s2()]);   
          pieces.remove(squares[m.s2()]);
       }
-      else if(squares[m.s1()].getType() == Piece.PAWN || squares[m.s1()].getType() == Piece.pawn){
-         if((m.s2() - m.s1()) % 16 != 0){
-            taken = m.s2() + cur_player*16;
-            mh.setCaptured(squares[taken]);
-            pieces.remove(squares[taken]);
-            squares[taken] = null;
-         }
-         else if(m.s2() > 111){
-            squares[m.s2()].setType(Piece.QUEEN, 'Q', 900);
-            mh.setPromo(squares[m.s1()]);
-         }
-         else if(m.s2() < 8){
-            squares[m.s2()].setType(Piece.queen, 'q', 900);
-            mh.setPromo(squares[m.s1()]);
-         }
+      else if(Math.abs(squares[m.s1()].getType()) == Piece.PAWN && (m.s2() - m.s1()) % 16 != 0){
+         taken = m.s2() + cur_player*16;
+         mh.setCaptured(squares[taken]);
+         pieces.remove(squares[taken]);
+         squares[taken] = null;
+      }
+      if(squares[m.s1()].getType() == Piece.PAWN && m.s2() > 111){
+         squares[m.s1()].setType(Piece.QUEEN, 'Q', 900);
+         mh.setPromo(squares[m.s1()]);
+      }
+      else if(squares[m.s1()].getType() == Piece.pawn && m.s2() < 8){
+         squares[m.s1()].setType(Piece.queen, 'q', 900);
+         mh.setPromo(squares[m.s1()]);
       }
       else if(squares[m.s1()].getType() == Piece.KING){
          w_c_rights[0] = w_c_rights[1] = false;
@@ -134,11 +131,11 @@ public class Board{
          else if(m.s2() == 112) b_c_rights[1] = false;
          else if(m.s2() == 119) b_c_rights[0] = false;
       }
-    
+      
       squares[m.s2()] = squares[m.s1()];
       squares[m.s2()].setPos(m.s2());
       squares[m.s1()] = null;
-    
+      
       return mh;
    }
          
@@ -190,7 +187,7 @@ public class Board{
       System.out.print(" ");
      
      //to be fixed later...
-      System.out.print( "- 0 1" );
+      System.out.print( "- 0 1\n" );
    }
 
    

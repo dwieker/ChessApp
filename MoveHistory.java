@@ -1,7 +1,7 @@
 public class MoveHistory{
    private Move move;
-   private boolean[] b_castle_rights;
-   private boolean[] w_castle_rights;
+   private boolean[] b_castle_rights = new boolean[2];
+   private boolean[] w_castle_rights = new boolean[2];
    private int did_castle = -1; //0-queen side white, 1-king side white, 2-queen side black, 3-king side black
    private Piece captured;
    private Piece pawn_promotion;
