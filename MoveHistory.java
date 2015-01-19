@@ -7,7 +7,7 @@ public class MoveHistory{
    private Piece pawn_promotion;
    private int enPassantSq;
    
-   public MoveHistory(Move m, boolean[] b, boolean[] w, enPassantSq){
+   public MoveHistory(Move m, boolean[] b, boolean[] w, int enPassantSq){
       move = m;
       b_castle_rights[0] = b[0];
       b_castle_rights[1] = b[1];
@@ -45,21 +45,11 @@ public class MoveHistory{
       return pawn_promotion;
    }
    
-   public Move get_move()
-   {
-      return move;
-   }
-   
-   public Move get_last_move()
-   {
-      return last_move;
-   }
-   
    public void setCaptured(Piece p){
       captured = p;
    }
    
-   public void setPromo(int s){
+   public void setPromo(Piece s){
 	   pawn_promotion = s;
    }
    

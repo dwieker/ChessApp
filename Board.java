@@ -19,7 +19,7 @@ public class Board{
       squares = new Piece[128];
       pieces = new LinkedList<Piece>();
       Piece temp;
-
+   
       //initialize castle rights to false
       w_c_rights[0] = false;
       w_c_rights[1] = false;
@@ -33,7 +33,7 @@ public class Board{
          if(FEN.charAt(i) == '/' ){ row--; col = 0;}
          else if(FEN.charAt(i) > '0' && FEN.charAt(i) < '9')
             col += Character.getNumericValue(FEN.charAt(i));
-        
+         
          else if(FEN.charAt(i) == ' '){
             
             //read current player
@@ -56,8 +56,8 @@ public class Board{
          
          else{
             temp = new Piece(FEN.charAt(i), row*16 + col);
-            if(temp.letter = "K") wKing = temp;
-            else if(temp.letter = "k") bKing = temp;
+            if(temp.letter == 'K') wKing = temp;
+            else if(temp.letter == 'k') bKing = temp;
             else pieces.add(temp);
             
             squares[row*16 + col] = temp;
@@ -73,71 +73,73 @@ public class Board{
    
    public MoveHistory movePiece(Move m){
    
-    MoveHistory mh = new MoveHistory(m, b_c_rights, w_c_rights, enPassantSq);
-    cur_player *= -1;
-    int taken;
-
-    if (squares[m.s1()] != null){
-        move_history.setCaptured(squares[s2]);   
-        pieces.remove(squares[s2]);
-    }
-    else if(m.s1().getType() == Piece.PAWN || m.s1().getType() == Piece.pawn){
-    	if(m.s2() - m.s1()) % 16 != 0){
-	    	taken = s2 + cur_player*16;
-	    	move_history.setCaptured(squares[taken]);
-	    	pieces.remove(squares[taken]);
-	    	squares[taken] = null;
-	    }
-    	else if(m.s2() > 111){
-    		squares[m.s2()].setType(Piece.QUEEN, 'Q', 900);
-    		mh.setPromo(m.s1());
-    	}
-    	else if(m.s2() < 8){
-    		squares[m.s2()].setType(Piece.queen, 'q', 900);
-    		mh.setPromo(m.s1())
-    	}
-    }
-    else if(squares[m.s1()].getType() == Piece.KING){
-    	w_c_rights[0] = w_c_rights[1] = false;
-    	if(m.s1() == 4 && m.s2() == 6){
-    		squares[5] = squares[7];
-    		squares[5].setPos(5);
-    		squares[7] = null;
-    		mh.castled(2);
-    	}
-    	else if(m.s1() == 4 && m.s2() == 2){
-    		squares[3] = squares[0];
-    		squares[3].setPos(3);
-    		squares[0] = null;
-    		mh.castled(1);
-    	}
-    }
-    else if(squares[m.s1()].getType() == Piece.king){
-    	b_c_rights[0] = b_c_rights[1] = false;
-    	if(m.s1() == 116 && m.s2() == 118){
-    		squares[117] = squares[119];
-    		squares[117].setPos(117);
-    		squares[119] = null;
-    		mh.castled(4);
-    	}
-    	else if(m.s1() == 116 && m.s2() == 114){
-    		squares[115] = squares[112];
-    		squares[115].setPos(115);
-    		squares[112] = null;
-    		mh.castled(3);
-    	}
-    }
-    else if(abs(squares[m.s1()].getType()) == Piece.ROOK)
-    {
-    	if(m.s1() == 7) w_c_rights[0] = false;
-    	else if(m.s1() == 0) w_c_rights[1] = false;
-    	else if(m.s2() == 112) b_c_rights[1] = false;
-    	else if(m.s2() == 119) b_c_rights[0] = false;
-    }
+      MoveHistory mh = new MoveHistory(m, b_c_rights, w_c_rights, enPassantSq);
+      cur_player *= -1;
+      int taken;
+   
+      if (squares[m.s1()] != null){
+         mh.setCaptured(squares[m.s2()]);   
+         pieces.remove(squares[m.s2()]);
+      }
+      else if(squares[m.s1()].getType() == Piece.PAWN || squares[m.s1()].getType() == Piece.pawn){
+         if((m.s2() - m.s1()) % 16 != 0){
+            taken = m.s2() + cur_player*16;
+            mh.setCaptured(squares[taken]);
+            pieces.remove(squares[taken]);
+            squares[taken] = null;
+         }
+         else if(m.s2() > 111){
+            squares[m.s2()].setType(Piece.QUEEN, 'Q', 900);
+            mh.setPromo(squares[m.s1()]);
+         }
+         else if(m.s2() < 8){
+            squares[m.s2()].setType(Piece.queen, 'q', 900);
+            mh.setPromo(squares[m.s1()]);
+         }
+      }
+      else if(squares[m.s1()].getType() == Piece.KING){
+         w_c_rights[0] = w_c_rights[1] = false;
+         if(m.s1() == 4 && m.s2() == 6){
+            squares[5] = squares[7];
+            squares[5].setPos(5);
+            squares[7] = null;
+            mh.castled(2);
+         }
+         else if(m.s1() == 4 && m.s2() == 2){
+            squares[3] = squares[0];
+            squares[3].setPos(3);
+            squares[0] = null;
+            mh.castled(1);
+         }
+      }
+      else if(squares[m.s1()].getType() == Piece.king){
+         b_c_rights[0] = b_c_rights[1] = false;
+         if(m.s1() == 116 && m.s2() == 118){
+            squares[117] = squares[119];
+            squares[117].setPos(117);
+            squares[119] = null;
+            mh.castled(4);
+         }
+         else if(m.s1() == 116 && m.s2() == 114){
+            squares[115] = squares[112];
+            squares[115].setPos(115);
+            squares[112] = null;
+            mh.castled(3);
+         }
+      }
+      else if(Math.abs(squares[m.s1()].getType()) == Piece.ROOK)
+      {
+         if(m.s1() == 7) w_c_rights[0] = false;
+         else if(m.s1() == 0) w_c_rights[1] = false;
+         else if(m.s2() == 112) b_c_rights[1] = false;
+         else if(m.s2() == 119) b_c_rights[0] = false;
+      }
     
-    squares[m.s2()] = squares[m.s1()];
-    squares[m.s2()].setPos(m.s2());
-    squares[m.s1()] = null;
+      squares[m.s2()] = squares[m.s1()];
+      squares[m.s2()].setPos(m.s2());
+      squares[m.s1()] = null;
+    
+      return mh;
    }
          
    

@@ -65,4 +65,8 @@ public class Piece{
 	   letter = l;
 	   value = v;
    }
+   
+   public void setPos(int p){
+      pos = p;
+   }
 }

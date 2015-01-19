@@ -39,7 +39,7 @@ public class Move{
    
    public int s1(){
       return s1;
-  
+   }
    public int s2(){
       return s2;
    }
