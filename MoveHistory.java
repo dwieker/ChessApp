@@ -4,7 +4,7 @@ public class MoveHistory{
    private boolean[] w_castle_rights = new boolean[2];
    private int did_castle = -1; //0-queen side white, 1-king side white, 2-queen side black, 3-king side black
    private Piece captured;
-   private Piece pawn_promotion;
+   private boolean pawnPromo;
    private int enPassantSq;
    
    public MoveHistory(Move m, boolean[] b, boolean[] w, int enPassantSq){
@@ -14,9 +14,11 @@ public class MoveHistory{
       w_castle_rights[0] = w[0];
       w_castle_rights[1] = w[1];
       this.enPassantSq = enPassantSq;
+      pawnPromo = false;
+      
    }
    
-   public Move get_move()
+   public Move getMove()
    {
       return move;
    }
@@ -35,26 +37,29 @@ public class MoveHistory{
    {
       return did_castle;
    }
-   public Piece get_captured()
+   public Piece getCaptured()
    {
       return captured;
    }
    
-   public Piece get_promotion()
+   public boolean getPromo()
    {
-      return pawn_promotion;
+      return pawnPromo;
    }
    
    public void setCaptured(Piece p){
       captured = p;
    }
    
-   public void setPromo(Piece s){
-	   pawn_promotion = s;
+   public void setPromo(){
+	   pawnPromo = true;
    }
    
    public void castled(int c){
 	   did_castle = c;
    }
    
+   public int getEnPassant(){
+      return enPassantSq;
+   }
 }
