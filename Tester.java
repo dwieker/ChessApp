@@ -3,12 +3,12 @@ import java.util.*;
 public class Tester{
    public static void main(String args[]){
       FENtest();
-      perftTest();
+      System.out.println(perftTest(4));
    }
    
    public static void FENtest(){
       Board board;
-      String test, test1;
+      String test;
       
       test = "rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b KQkq - 0 1";
       board = new Board(test);
@@ -52,7 +52,24 @@ public class Tester{
       
    }
    
-   public static void perftTest(){
+   public static int perftTest(int depth){
+      Board board = new Board(Board.STARTFEN);
+      int nodes = 0;
+      Move[] moves = new Move[264];
+      int n_moves;
+      MoveHistory mh;
+      
+      
+      if(depth == 0) return 1;
+      
+      n_moves = board.genMoves(moves);
+      for(int i = 0; i < n_moves; i++) {
+        mh = board.movePiece(moves[i]);
+        nodes += perftTest(depth - 1);
+        board.unmovePiece(mh);
+      }
+      return nodes;
+           
    }
    
 }

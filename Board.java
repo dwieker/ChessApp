@@ -3,7 +3,7 @@ import java.util.*;
 public class Board{
    static final int WHITE = 1;
    static final int BLACK = -1;
-   static final String STARTPOS = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+   static final String STARTFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
    
    private int curPlayer;
    private int move_count;
@@ -261,27 +261,26 @@ public class Board{
       return enPassantSq;
    }
    
-   public Move[] genMoves(){
-      Move[] moves = new Move[100];
+   public int genMoves(Move[] moves){
       int n = 0, type;
       
       for(Piece p: pieces){
          if((type = p.getType()) * curPlayer > 0){
-            if(Math.abs(type) == Piece.KNIGHT) n += MoveGen.knightMoves(this, p, moves, n);
-            else if(Math.abs(type) == Piece.BISHOP) n += MoveGen.checkDiagonals(this, p, moves, n);
-            else if(Math.abs(type) == Piece.ROOK) n += MoveGen.checkRows(this, p, moves, n); 
+            if(Math.abs(type) == Piece.KNIGHT) n = MoveGen.knightMoves(this, p, moves, n);
+            else if(Math.abs(type) == Piece.BISHOP) n = MoveGen.checkDiagonals(this, p, moves, n);
+            else if(Math.abs(type) == Piece.ROOK) n = MoveGen.checkRows(this, p, moves, n); 
             else if(Math.abs(type) == Piece.QUEEN){
-               n += MoveGen.checkRows(this, p, moves, n);
-               n += MoveGen.checkDiagonals(this, p, moves, n);
+               n = MoveGen.checkRows(this, p, moves, n);
+               n = MoveGen.checkDiagonals(this, p, moves, n);
             }
-            else if(type == Piece.PAWN) n += MoveGen.wPawnMoves(this, p, moves, n);
-            else if(type == Piece.pawn) n += MoveGen.bPawnMoves(this, p, moves, n);
-            else if(type == Piece.KING) n += MoveGen.wKingMoves(this, p, moves, n);
-            else if(type == Piece.king) n += MoveGen.bKingMoves(this, p, moves, n);
+            else if(type == Piece.PAWN) n = MoveGen.wPawnMoves(this, p, moves, n);
+            else if(type == Piece.pawn) n = MoveGen.bPawnMoves(this, p, moves, n);
+            else if(type == Piece.KING) n = MoveGen.wKingMoves(this, p, moves, n);
+            else if(type == Piece.king) n = MoveGen.bKingMoves(this, p, moves, n);
          }
       }
       
-      return moves;
+      return n;
    }
    
 }
