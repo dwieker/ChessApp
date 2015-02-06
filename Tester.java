@@ -3,8 +3,18 @@ import java.util.*;
 public class Tester{
    public static void main(String args[]){
       FENtest();
-      Board b = new Board(Board.STARTFEN);
-      System.out.println(perftTest(3,b));
+      Board b = new Board(Board.POSITION4);
+      System.out.println(perftTest(1,b));
+      
+      
+    /* b = new Board(Board.TEST);
+      Move[] moves = new Move[256];
+      
+      int n = b.genMoves(moves);
+      for(int i = 0; i < n; i++){
+         System.out.println(moves[i]);
+      }*/
+      
    }
    
    public static void FENtest(){

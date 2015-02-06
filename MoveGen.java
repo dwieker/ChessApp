@@ -143,6 +143,7 @@ public class MoveGen{
    
    public static int wPawnMoves(Board board, Piece piece, Move[] moves, int n){
       int pos = piece.getPos();
+      Piece temp;
       
       if( (((pos+16)&0x88) == 0) && board.checkSquare(pos + 16) == null){
          moves[n++] = new Move(pos, pos + 16);
@@ -150,8 +151,8 @@ public class MoveGen{
             moves[n++] = new Move(pos, pos + 32);
          }
       }
-      if(((pos+17)&0x88) == 0 && (board.checkSquare(pos + 17) != null || pos + 17 == board.enPassant())) moves[n++] = new Move(pos, pos + 17);
-      if(((pos+15)&0x88) == 0 && (board.checkSquare(pos + 15) != null || pos + 15 == board.enPassant())) moves[n++] = new Move(pos, pos + 15);
+      if(((pos+17)&0x88) == 0 && (board.checkSquare(pos + 17) != null && board.checkSquare(pos + 17).getType() < 0 || pos + 17 == board.enPassant())) moves[n++] = new Move(pos, pos + 17);
+      if(((pos+15)&0x88) == 0 && (board.checkSquare(pos + 15) != null && board.checkSquare(pos + 15).getType() < 0 || pos + 15 == board.enPassant())) moves[n++] = new Move(pos, pos + 15);
       
       return n;
    }
@@ -165,8 +166,8 @@ public class MoveGen{
             moves[n++] = new Move(pos, pos - 32);
          }
       }
-      if(((pos-17)&0x88) == 0 && (board.checkSquare(pos - 17) != null || pos - 17 == board.enPassant())) moves[n++] = new Move(pos, pos - 17);
-      if(((pos-15)&0x88) == 0 && (board.checkSquare(pos - 15) != null || pos - 15 == board.enPassant())) moves[n++] = new Move(pos, pos - 15);
+      if(((pos-17)&0x88) == 0 && (board.checkSquare(pos - 17) != null && board.checkSquare(pos - 17).getType() > 0 || pos - 17 == board.enPassant())) moves[n++] = new Move(pos, pos - 17);
+      if(((pos-15)&0x88) == 0 && (board.checkSquare(pos - 15) != null && board.checkSquare(pos - 15).getType() > 0 || pos - 15 == board.enPassant())) moves[n++] = new Move(pos, pos - 15);
       
       return n;
    }

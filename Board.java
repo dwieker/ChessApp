@@ -4,6 +4,8 @@ public class Board{
    static final int WHITE = 1;
    static final int BLACK = -1;
    static final String STARTFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+   static final String POSITION4 = "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1";
+   static final String TEST = "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1";
    
    private int curPlayer;
    private int move_count;
@@ -266,20 +268,42 @@ public class Board{
       
       for(Piece p: pieces){
          if((type = p.getType()) * curPlayer > 0){
-            if(Math.abs(type) == Piece.KNIGHT) n = MoveGen.knightMoves(this, p, moves, n);
-            else if(Math.abs(type) == Piece.BISHOP) n = MoveGen.checkDiagonals(this, p, moves, n);
-            else if(Math.abs(type) == Piece.ROOK) n = MoveGen.checkRows(this, p, moves, n); 
+            System.out.print(type + "   ");
+            if(Math.abs(type) == Piece.KNIGHT){
+               n = MoveGen.knightMoves(this, p, moves, n);
+               System.out.println(n);
+            }
+            else if(Math.abs(type) == Piece.BISHOP){
+               n = MoveGen.checkDiagonals(this, p, moves, n);
+               System.out.println(n);
+            }
+            else if(Math.abs(type) == Piece.ROOK){
+               n = MoveGen.checkRows(this, p, moves, n); 
+               System.out.println(n);
+            }
+            
             else if(Math.abs(type) == Piece.QUEEN){
                n = MoveGen.checkRows(this, p, moves, n);
                n = MoveGen.checkDiagonals(this, p, moves, n);
+               System.out.println(n);
             }
-            else if(type == Piece.PAWN) n = MoveGen.wPawnMoves(this, p, moves, n);
-            else if(type == Piece.pawn) n = MoveGen.bPawnMoves(this, p, moves, n);
+            else if(type == Piece.PAWN){
+               n = MoveGen.wPawnMoves(this, p, moves, n);
+               System.out.println(n);
+            }
+            
+            else if(type == Piece.pawn){
+               n = MoveGen.bPawnMoves(this, p, moves, n);
+               System.out.println(n);
+            }
+         
          }
-         //if(curPlayer > 0) n = MoveGen.wKingMoves(this, wKing, moves, n); 
-         //else n = MoveGen.bKingMoves(this, bKing, moves, n);
-
+         
+      
       }
+      
+      if(curPlayer > 0) n = MoveGen.wKingMoves(this, wKing, moves, n); 
+      else n = MoveGen.bKingMoves(this, bKing, moves, n);
       
       return n;
    }

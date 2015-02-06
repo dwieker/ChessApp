@@ -43,4 +43,12 @@ public class Move{
    public int s2(){
       return s2;
    }
+   
+   public String toString(){
+      String print = new String();
+      
+      print = "Moved " + s1 + " to " + s2;
+      
+      return print;
+   }
 }
