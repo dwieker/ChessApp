@@ -17,9 +17,13 @@ public class Piece{
    int pos; // location in the squares array
    char letter;
    int value;
+   int[] moves;
+   int move;
   
    
    public Piece(int type, int pos){
+      moves = new int[21];
+      move = 0;
       this.type = type;
       this.pos = pos;
       
@@ -68,5 +72,19 @@ public class Piece{
    
    public void setPos(int p){
       pos = p;
+   }
+   
+   public int getPos(){
+      return pos;
+   }
+   
+   public void resetMoves(){
+      move = 0;
+   }
+   
+   public boolean nextMove(int m){
+      moves[move] = m;
+      move++;
+      return moves[move - 1] != -1;
    }
 }

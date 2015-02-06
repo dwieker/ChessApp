@@ -5,10 +5,10 @@ public class Board{
    static final int BLACK = -1;
    static final String STARTPOS = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
    
-   private int cur_player;
+   private int curPlayer;
    private int move_count;
-   private boolean[] w_c_rights = new boolean[2]; //first index is king side, second queen side
-   private boolean[] b_c_rights = new boolean[2];
+   private boolean[] wCastleRights = new boolean[2]; //first index is king side, second queen side
+   private boolean[] bCastleRights = new boolean[2];
    private int enPassantSq = -1;
    private Piece[] squares;
    private LinkedList<Piece> pieces;
@@ -21,10 +21,10 @@ public class Board{
       Piece temp;
    
       //initialize castle rights to false
-      w_c_rights[0] = false;
-      w_c_rights[1] = false;
-      b_c_rights[0] = false;
-      b_c_rights[1] = false;
+      wCastleRights[0] = false;
+      wCastleRights[1] = false;
+      bCastleRights[0] = false;
+      bCastleRights[1] = false;
       
       
       //Scan FEN
@@ -38,16 +38,16 @@ public class Board{
             
             //read current player
             i++;
-            if(FEN.charAt(i) == 'w') cur_player = WHITE;
-            else if(FEN.charAt(i) == 'b') cur_player = BLACK;
+            if(FEN.charAt(i) == 'w') curPlayer = WHITE;
+            else if(FEN.charAt(i) == 'b') curPlayer = BLACK;
               
             //Read castle rights
             i++; i++;
             while(FEN.charAt(i) != '-'  && FEN.charAt(i) != ' ' ){
-               if(FEN.charAt(i) == 'K') w_c_rights[0] = true;
-               else if(FEN.charAt(i) == 'Q') w_c_rights[1] = true;
-               else if(FEN.charAt(i) == 'k') b_c_rights[0] = true;
-               else if(FEN.charAt(i) == 'q') b_c_rights[1] = true;
+               if(FEN.charAt(i) == 'K') wCastleRights[0] = true;
+               else if(FEN.charAt(i) == 'Q') wCastleRights[1] = true;
+               else if(FEN.charAt(i) == 'k') bCastleRights[0] = true;
+               else if(FEN.charAt(i) == 'q') bCastleRights[1] = true;
                i++;
             }
             
@@ -73,18 +73,24 @@ public class Board{
    
    public MoveHistory movePiece(Move m){
    
-      MoveHistory mh = new MoveHistory(m, b_c_rights, w_c_rights, enPassantSq);
-      cur_player *= -1;
+      MoveHistory mh = new MoveHistory(m, bCastleRights, wCastleRights, enPassantSq);
+      curPlayer *= -1;
+      enPassantSq = -1;
       int taken;
       if (squares[m.s2()] != null){
          mh.setCaptured(squares[m.s2()]);   
          pieces.remove(squares[m.s2()]);
       }
-      else if(Math.abs(squares[m.s1()].getType()) == Piece.PAWN && (m.s2() - m.s1()) % 16 != 0){
-         taken = m.s2() + cur_player*16;
-         mh.setCaptured(squares[taken]);
-         pieces.remove(squares[taken]);
-         squares[taken] = null;
+      else if(Math.abs(squares[m.s1()].getType()) == Piece.PAWN){
+         if((m.s2() - m.s1()) % 16 != 0){
+            taken = m.s2() + curPlayer*16;
+            mh.setCaptured(squares[taken]);
+            pieces.remove(squares[taken]);
+            squares[taken] = null;
+         }
+         else if(Math.abs(m.s2() - m.s1()) == 32){
+            enPassantSq = m.s2() + curPlayer;
+         }
       }
       if(squares[m.s1()].getType() == Piece.PAWN && m.s2() > 111){
          squares[m.s1()].setType(Piece.QUEEN, 'Q', 900);
@@ -94,8 +100,8 @@ public class Board{
          squares[m.s1()].setType(Piece.queen, 'q', 900);
          mh.setPromo();
       }
-      else if(squares[m.s1()].getType() == Piece.KING){
-         w_c_rights[0] = w_c_rights[1] = false;
+      if(squares[m.s1()].getType() == Piece.KING){
+         wCastleRights[0] = wCastleRights[1] = false;
          if(m.s1() == 4 && m.s2() == 6){
             squares[5] = squares[7];
             squares[5].setPos(5);
@@ -110,7 +116,7 @@ public class Board{
          }
       }
       else if(squares[m.s1()].getType() == Piece.king){
-         b_c_rights[0] = b_c_rights[1] = false;
+         bCastleRights[0] = bCastleRights[1] = false;
          if(m.s1() == 116 && m.s2() == 118){
             squares[117] = squares[119];
             squares[117].setPos(117);
@@ -126,10 +132,10 @@ public class Board{
       }
       else if(squares[m.s1()].getType() == Piece.ROOK || squares[m.s1()].getType() == Piece.rook)
       {
-         if(m.s1() == 7) w_c_rights[0] = false;
-         else if(m.s1() == 0) w_c_rights[1] = false;
-         else if(m.s2() == 112) b_c_rights[1] = false;
-         else if(m.s2() == 119) b_c_rights[0] = false;
+         if(m.s1() == 7) wCastleRights[0] = false;
+         else if(m.s1() == 0) wCastleRights[1] = false;
+         else if(m.s2() == 112) bCastleRights[1] = false;
+         else if(m.s2() == 119) bCastleRights[0] = false;
       }
       
       squares[m.s2()] = squares[m.s1()];
@@ -141,100 +147,141 @@ public class Board{
    
    
    void unmovePiece(MoveHistory mh){
-        cur_player *= -1;
-        squares[mh.getMove().s1()] = squares[mh.getMove().s2()];  //move piece back to previous square
-        squares[mh.getMove().s1()].setPos(mh.getMove().s1()); //update pieces position
-        squares[mh.getMove().s2()] = null; //empty old square
-        b_c_rights = mh.get_b_rights();
-        w_c_rights = mh.get_w_rights();
-        enPassantSq =  mh.getEnPassant();
-
-
-        if(mh.getCaptured() != null){
-            squares[mh.getMove().s2()] = mh.getCaptured();
-            pieces.add(mh.getCaptured());
-
-        }
-        if(mh.getPromo()){
-            if(cur_player == WHITE)
-                squares[mh.getMove().s1()].setType(Piece.PAWN, 'P', 100);
-            else
-                 squares[mh.getMove().s1()].setType(Piece.pawn, 'p', 100);
-        }
-        else if(mh.did_castle() > 0) {
-            if(mh.did_castle() == 1){
-                w_c_rights[0] = true;
-                squares[0] = squares[3];
-                squares[3] = null;
-                squares[0].setPos(0);
-            }
-            else if(mh.did_castle() == 2){
-                w_c_rights[1] = true;
-                squares[7] = squares[5];
-                squares[5] = null;
-                squares[7].setPos(7);
-            }
-            else if(mh.did_castle() == 3){
-                b_c_rights[0] = true;
-                squares[112] = squares[115];
-                squares[115] = null;
-                squares[112].setPos(112);
-            }
-            else if(mh.did_castle() == 4){
-                b_c_rights[1] = true;
-                squares[119] = squares[117];
-                squares[117] = null;
-                squares[119].setPos(119);
-            }
-        }
+      curPlayer *= -1;
+      squares[mh.getMove().s1()] = squares[mh.getMove().s2()];  //move piece back to previous square
+      squares[mh.getMove().s1()].setPos(mh.getMove().s1()); //update pieces position
+      squares[mh.getMove().s2()] = null; //empty old square
+      bCastleRights = mh.get_b_rights();
+      wCastleRights = mh.get_w_rights();
+      enPassantSq =  mh.getEnPassant();
+   
+   
+      if(mh.getCaptured() != null){
+         squares[mh.getMove().s2()] = mh.getCaptured();
+         pieces.add(mh.getCaptured());
+      
+      }
+      if(mh.getPromo()){
+         if(curPlayer == WHITE)
+            squares[mh.getMove().s1()].setType(Piece.PAWN, 'P', 100);
+         else
+            squares[mh.getMove().s1()].setType(Piece.pawn, 'p', 100);
+      }
+      else if(mh.did_castle() > 0) {
+         if(mh.did_castle() == 1){
+            wCastleRights[0] = true;
+            squares[0] = squares[3];
+            squares[3] = null;
+            squares[0].setPos(0);
+         }
+         else if(mh.did_castle() == 2){
+            wCastleRights[1] = true;
+            squares[7] = squares[5];
+            squares[5] = null;
+            squares[7].setPos(7);
+         }
+         else if(mh.did_castle() == 3){
+            bCastleRights[0] = true;
+            squares[112] = squares[115];
+            squares[115] = null;
+            squares[112].setPos(112);
+         }
+         else if(mh.did_castle() == 4){
+            bCastleRights[1] = true;
+            squares[119] = squares[117];
+            squares[117] = null;
+            squares[119].setPos(119);
+         }
+      }
         
-    }
+   }
          
    
-   public void printFEN(){
+   public String printFEN(){
       int blanks = 0;
+      String print = new String("");;
       for(int i = 7; i > -1; i--){
          for(int j = 0; j < 8; j++){
             if(squares[i*16 + j] != null){
                if(blanks > 0){
-                  System.out.print(blanks);
+                  print += blanks;
                   blanks = 0;
                }
-               System.out.print(squares[i*16 + j].letter);
+               print += squares[i*16 + j].letter;
             }
             else blanks++;
          }
-         if(blanks > 0) System.out.print(blanks);
+         if(blanks > 0) print += blanks;
          blanks = 0;
-         if(i != 0) System.out.print("/");
+         if(i != 0) print += "/";
       }
       
       //add space
-      System.out.print(" ");
+      print += " ";
       
       //print current player
-      if(cur_player == WHITE)  System.out.print("w");
-      else if(cur_player == BLACK)  System.out.print("b");
+      if(curPlayer == WHITE)  print += "w";
+      else if(curPlayer == BLACK)  print += "b";
       
       //add space
-      System.out.print(" ");
+      print += " ";
       
       //print castle rights  
-      if(b_c_rights[0] || b_c_rights[1] || b_c_rights[0] || b_c_rights[1]){
-         if(b_c_rights[0]) System.out.print("K");
-         if(b_c_rights[1]) System.out.print("Q");
-         if(b_c_rights[0]) System.out.print("k");
-         if(b_c_rights[1]) System.out.print("q");   
+      if(bCastleRights[0] || bCastleRights[1] || wCastleRights[0] || wCastleRights[1]){
+         if(wCastleRights[0]) print += "K";
+         if(wCastleRights[1]) print += "Q";
+         if(bCastleRights[0]) print += "k";
+         if(bCastleRights[1]) print += "q";   
       }
       else
-         System.out.print("-");
+         print += "-";
          
       //add space
-      System.out.print(" ");
+      print += " ";
      
      //to be fixed later...
-      System.out.print( "- 0 1\n" );
+      print += "- 0 1" ;
+      
+      return print;
+   }
+   
+   public Piece checkSquare(int s){
+      return squares[s];
+   }
+   
+   public boolean whiteCastle(int n){
+      return wCastleRights[n];
+   }
+   
+   public boolean blackCastle(int n){
+      return bCastleRights[n];
    }
 
+   public int enPassant(){
+      return enPassantSq;
+   }
+   
+   public Move[] genMoves(){
+      Move[] moves = new Move[100];
+      int n = 0, type;
+      
+      for(Piece p: pieces){
+         if((type = p.getType()) * curPlayer > 0){
+            if(Math.abs(type) == Piece.KNIGHT) n += MoveGen.knightMoves(this, p, moves, n);
+            else if(Math.abs(type) == Piece.BISHOP) n += MoveGen.checkDiagonals(this, p, moves, n);
+            else if(Math.abs(type) == Piece.ROOK) n += MoveGen.checkRows(this, p, moves, n); 
+            else if(Math.abs(type) == Piece.QUEEN){
+               n += MoveGen.checkRows(this, p, moves, n);
+               n += MoveGen.checkDiagonals(this, p, moves, n);
+            }
+            else if(type == Piece.PAWN) n += MoveGen.wPawnMoves(this, p, moves, n);
+            else if(type == Piece.pawn) n += MoveGen.bPawnMoves(this, p, moves, n);
+            else if(type == Piece.KING) n += MoveGen.wKingMoves(this, p, moves, n);
+            else if(type == Piece.king) n += MoveGen.bKingMoves(this, p, moves, n);
+         }
+      }
+      
+      return moves;
+   }
    
 }

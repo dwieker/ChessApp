@@ -1,199 +1,160 @@
 public class MoveGen{
-
-
-
-// ================== PIECE MOVES FUNCTIONS ====================== //
-int check_rows(Board board, Piece piece, int n){
-    for(int i = piece.pos + 1; !(i&0x88); i++){ //check right
-        if(board.squares[i] == NULL){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-        }
-        else if(board.squares[i]->value*piece.value < 0){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
+   
+   private static int[] kingDeltas;
+   private static int[] knightDeltas;
+   
+   public MoveGen(){
+      kingDeltas = new int[] {-1, 15, 16, 17, 1, -15, -16, -17};
+      knightDeltas = new int[] {31, 33, 18, -14, -31, -33, 14, -18};
+   }
+   
+   public static int checkRows(Board board, Piece piece, Move[] moves, int n){
+      Piece temp;
+      int pos = piece.getPos();
+      for(int i = pos + 1; (i&0x88) == 0; i++){
+         temp = board.checkSquare(i);
+         if(temp == null) moves[n] = new Move(pos, i);
+         else if(temp.getType()*piece.getType() < 0) moves[n++] = new Move(pos, i);
+         else 
             break;
-        }
-        else{
+      }
+      for(int i = pos - 1; (i&0x88) == 0; i--){
+         temp = board.checkSquare(i);
+         if(temp == null) moves[n] = new Move(pos, i);
+         else if(temp.getType()*piece.getType() < 0) moves[n++] = new Move(pos, i);
+         else 
             break;
-        }
-    }
-    for(int i = piece.pos - 1; !(i&0x88); i--){ //check left
-        if(board.squares[i] == NULL){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-        }
-        else if(board.squares[i]->value*piece.value < 0){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
+      }
+      for(int i = pos + 16; (i&0x88) == 0; i += 16){
+         temp = board.checkSquare(i);
+         if(temp == null) moves[n] = new Move(pos, i);
+         else if(temp.getType()*piece.getType() < 0) moves[n++] = new Move(pos, i);
+         else 
             break;
-        }
-        else{
+      }
+      for(int i = pos - 16; (i&0x88) == 0; i -= 16){
+         temp = board.checkSquare(i);
+         if(temp == null) moves[n] = new Move(pos, i);
+         else if(temp.getType()*piece.getType() < 0) moves[n++] = new Move(pos, i);
+         else 
             break;
-        }
-    }
-    for(int i = piece.pos + 16; !(i&0x88); i+= 16){ //check up
-        if(board.squares[i] == NULL){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-        }
-        else if(board.squares[i]->value*piece.value < 0){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
+      }
+      
+      return n;
+         
+   }
+   
+   public static int checkDiagonals(Board board, Piece piece, Move[] moves, int n){
+      Piece temp;
+      int pos = piece.getPos();
+      for(int i = pos + 17; (i&0x88) == 0; i += 17){
+         temp = board.checkSquare(i);
+         if(temp == null) moves[n] = new Move(pos, i);
+         else if(temp.getType()*piece.getType() < 0) moves[n++] = new Move(pos, i);
+         else 
             break;
-        }
-        else{
+      }
+      for(int i = pos + 15; (i&0x88) == 0; i += 15){
+         temp = board.checkSquare(i);
+         if(temp == null) moves[n] = new Move(pos, i);
+         else if(temp.getType()*piece.getType() < 0) moves[n++] = new Move(pos, i);
+         else 
             break;
-        }
-    }
-    for(int i = piece.pos - 16; !(i&0x88); i-= 16){ //check down
-        if(board.squares[i] == NULL){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-        }
-        else if(board.squares[i]->value*piece.value < 0){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
+      }
+      for(int i = pos - 15; (i&0x88) == 0; i -=15){
+         temp = board.checkSquare(i);
+         if(temp == null) moves[n] = new Move(pos, i);
+         else if(temp.getType()*piece.getType() < 0) moves[n++] = new Move(pos, i);
+         else 
             break;
-        }
-        else{
+      }
+      for(int i = pos - 17; (i&0x88) == 0; i -= 17){
+         temp = board.checkSquare(i);
+         if(temp == null) moves[n] = new Move(pos, i);
+         else if(temp.getType()*piece.getType() < 0) moves[n++] = new Move(pos, i);
+         else 
             break;
-        }
-    }
-    return n;
-}
-
-int check_diagonals(Board board, Piece piece, int n){
-    for(int i = piece.pos + 17; !(i&0x88); i+=17){ //check up-right
-        if(board.squares[i] == NULL){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-        }
-        else if(board.squares[i]->value*piece.value < 0){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-            break;
-        }
-        else{
-            break;
-        }
-    }
-    for(int i = piece.pos + 15; !(i&0x88); i+=15){ //check up-left
-        if(board.squares[i] == NULL){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-        }
-        else if(board.squares[i]->value*piece.value < 0){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-            break;
-        }
-        else{
-            break;
-        }
-    }
-    for(int i = piece.pos - 15; !(i&0x88); i-= 15){ //check down-right
-        if(board.squares[i] == NULL){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-        }
-        else if(board.squares[i]->value*piece.value < 0){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-            break;
-        }
-        else{
-            break;
-        }
-    }
-    for(int i = piece.pos - 17; !(i&0x88); i-= 17){ //check down-left
-        if(board.squares[i] == NULL){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-        }
-        else if(board.squares[i]->value*piece.value < 0){
-            assert(!(i&0x88));
-            piece.moves[n] = i;
-            n+=1;
-            break;
-        }
-        else{
-            break;
-        }
-    }
-    return n;
-}
-
-int set_rook_moves(Board board, Piece rook){
-    int n = check_rows(board, rook, 0);
-    return n;
-}
-int set_bishop_moves(Board board, Piece bishop){
-    int n = check_diagonals(board, bishop, 0);
-    return n;
-}
-int set_queen_moves(Board board, Piece queen){
-    int n = check_rows(board, queen, 0);
-    n = check_diagonals(board, queen, n);
-    return n;
-}
-int set_king_moves(Board board, Piece king, bool print){
-    int n = 0;
-    for(int i = 0; i < 8; i++){
-        int pos = king.pos + king_deltas[i];
-        if( !(pos & 0x88) ){
-            if(board.squares[pos] == NULL || board.squares[pos]->value * king.value < 0){
-                king.moves[n] = pos;
-                n++;
-            }
-        }
-    }
-    
-    if(king.value > 0){
-        if(board.castling[0] && !board.squares[1] && !board.squares[2] && !board.squares[3] && board.squares[0] && board.squares[0]->value == 4){
-            king.moves[n] = 2;
-            n++;
-        }
-        if(board.castling[1] && !board.squares[5] && !board.squares[6] && board.squares[7] && board.squares[7]->value == 4){
-            king.moves[n] = 6;
-            n++;
-        }
-    }else {
-        if(board.castling[2] && !board.squares[113] && !board.squares[114] && !board.squares[115] && board.squares[112] && board.squares[112]->value == -4){
-            king.moves[n] = 114;
-            n++;
-        }
-        if(board.castling[3] && !board.squares[117] && !board.squares[118] && board.squares[119] && board.squares[119]->value == -4){
-            king.moves[n] = 118;
-            n++;
-            
-        }
-    }
-    if(print){
-        std::cout << king.letter << " KING POSSIBLE MOVES: ";
-        for(int i = 0; i < n; i++){
-            std::cout << king.pos << "-> " << king.moves[i];
-            
-        }
-        
-        
-    }
-    return n;
-}
-
+      }
+      
+      return n++;
+   }
+   
+   public static int wKingMoves(Board board, Piece king, Move[] moves, int n){
+      Piece temp;
+      int pos = king.getPos();
+      for(int i = 0; i < 8; i++){
+         int move = pos + kingDeltas[i];
+         temp = board.checkSquare(move);
+         if((move&0x88) == 0 && (temp == null || temp.getType()*king.getType() < 0)) moves[n++] = new Move(pos, move);
+      }
+      if(board.whiteCastle(0) && board.checkSquare(1) == null && board.checkSquare(2) == null && board.checkSquare(3) == null && board.checkSquare(0) != null && board.checkSquare(0).getType() == 4){
+         king.moves[n++] = 2;
+      }
+      if(board.whiteCastle(1) && board.checkSquare(5) == null && board.checkSquare(6) == null && board.checkSquare(7)!= null && board.checkSquare(7).getType() == 4){
+         king.moves[n++] = 6;
+      }
+      return n;
+   }
+   
+   public static int bKingMoves(Board board, Piece king, Move[] moves, int n){
+      Piece temp;
+      int pos = king.getPos();
+      for(int i = 0; i < 8; i++){
+         int move = pos + kingDeltas[i];
+         temp = board.checkSquare(move);
+         if((move&0x88) == 0 && (temp == null || temp.getType()*king.getType() < 0)) moves[n++] = new Move(pos, move);
+      }
+      if(board.blackCastle(0) && board.checkSquare(113) == null && board.checkSquare(114) == null && board.checkSquare(115) == null && board.checkSquare(112) != null && board.checkSquare(112).getType() == 4){
+         king.moves[n++] = 114;
+      }
+      if(board.blackCastle(1) && board.checkSquare(117) == null && board.checkSquare(118) == null && board.checkSquare(119)!= null && board.checkSquare(119).getType() == -4){
+         king.moves[n++] = 118;
+      }
+      return n;
+   }
+   
+   public static int knightMoves(Board board, Piece knight, Move[] moves, int n){
+      Piece temp;
+      int pos = knight.getPos();
+      for(int i = 0; i < 8; i++){
+         int move = pos + knightDeltas[i];
+         temp = board.checkSquare(move);
+         if((move&0x88) == 0 && (temp == null || temp.getType()*knight.getType() < 0)) moves[n++] = new Move(pos, move);
+      }
+      
+      return n;
+   }
+   
+   public static int wPawnMoves(Board board, Piece piece, Move[] moves, int n){
+      Piece temp;
+      int pos = piece.getPos();
+      
+      if(board.checkSquare(pos + 16) == null){
+         moves[n++] = new Move(pos, pos + 16);
+         if(pos < 24 && pos > 15 && board.checkSquare(pos + 32) == null){
+            moves[n++] = new Move(pos, pos + 32);
+         }
+      }
+      if(board.checkSquare(pos + 17) != null || pos + 17 == board.enPassant()) moves[n++] = new Move(pos, pos + 17);
+      if(board.checkSquare(pos + 15) != null || pos + 15 == board.enPassant()) moves[n++] = new Move(pos, pos + 15);
+      
+      return n;
+   }
+   
+   public static int bPawnMoves(Board board, Piece piece, Move[] moves, int n){
+      Piece temp;
+      int pos = piece.getPos();
+      
+      if(board.checkSquare(pos - 16) == null){
+         moves[n++] = new Move(pos, pos - 16);
+         if(pos > 95 && pos < 104 && board.checkSquare(pos - 32) == null){
+            moves[n++] = new Move(pos, pos - 32);
+         }
+      }
+      if(board.checkSquare(pos - 17) != null || pos - 17 == board.enPassant()) moves[n++] = new Move(pos, pos - 17);
+      if(board.checkSquare(pos - 15) != null || pos - 15 == board.enPassant()) moves[n++] = new Move(pos, pos - 15);
+      
+      return n;
+   }  
+       
 }
