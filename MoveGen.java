@@ -40,7 +40,7 @@ public class MoveGen{
       for(int i = pos - 16; (i&0x88) == 0; i -= 16){
          temp = board.checkSquare(i);
          if(temp == null) moves[n++] = new Move(pos, i);
-          else if(temp.getType()*piece.getType() < 0){
+         else if(temp.getType()*piece.getType() < 0){
             moves[n++] = new Move(pos, i);
             break;
          }
@@ -58,7 +58,7 @@ public class MoveGen{
       for(int i = pos + 17; (i&0x88) == 0; i += 17){
          temp = board.checkSquare(i);
          if(temp == null) moves[n++] = new Move(pos, i);
-          else if(temp.getType()*piece.getType() < 0){
+         else if(temp.getType()*piece.getType() < 0){
             moves[n++] = new Move(pos, i);
             break;
          }
@@ -68,7 +68,7 @@ public class MoveGen{
       for(int i = pos + 15; (i&0x88) == 0; i += 15){
          temp = board.checkSquare(i);
          if(temp == null) moves[n++] = new Move(pos, i);
-          else if(temp.getType()*piece.getType() < 0){
+         else if(temp.getType()*piece.getType() < 0){
             moves[n++] = new Move(pos, i);
             break;
          }
@@ -78,7 +78,7 @@ public class MoveGen{
       for(int i = pos - 15; (i&0x88) == 0; i -=15){
          temp = board.checkSquare(i);
          if(temp == null) moves[n++] = new Move(pos, i);
-          else if(temp.getType()*piece.getType() < 0){
+         else if(temp.getType()*piece.getType() < 0){
             moves[n++] = new Move(pos, i);
             break;
          }
@@ -106,10 +106,10 @@ public class MoveGen{
          int move = pos + kingDeltas[i];
          if((move&0x88) == 0 && (board.checkSquare(move) == null || board.checkSquare(move).getType()*king.getType() < 0)) moves[n++] = new Move(pos, move);
       }
-      if(board.whiteCastle(0) && board.checkSquare(1) == null && board.checkSquare(2) == null && board.checkSquare(3) == null && board.checkSquare(0) != null && board.checkSquare(0).getType() == Piece.ROOK){
+      if(board.whiteCastle(1) && board.checkSquare(1) == null && board.checkSquare(2) == null && board.checkSquare(3) == null && board.checkSquare(0) != null && board.checkSquare(0).getType() == Piece.ROOK){
          moves[n++] = new Move(pos,2);
       }
-      if(board.whiteCastle(1) && board.checkSquare(5) == null && board.checkSquare(6) == null && board.checkSquare(7)!= null && board.checkSquare(7).getType() == Piece.ROOK){
+      if(board.whiteCastle(0) && board.checkSquare(5) == null && board.checkSquare(6) == null && board.checkSquare(7)!= null && board.checkSquare(7).getType() == Piece.ROOK){
          moves[n++] = new Move(pos, 6);
       }
       return n;

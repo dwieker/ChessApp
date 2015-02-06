@@ -275,9 +275,10 @@ public class Board{
             }
             else if(type == Piece.PAWN) n = MoveGen.wPawnMoves(this, p, moves, n);
             else if(type == Piece.pawn) n = MoveGen.bPawnMoves(this, p, moves, n);
-            else if(type == Piece.KING) n = MoveGen.wKingMoves(this, p, moves, n);
-            else if(type == Piece.king) n = MoveGen.bKingMoves(this, p, moves, n);
          }
+         //n = MoveGen.wKingMoves(this, wKing, moves, n); 
+         //n = MoveGen.bKingMoves(this, bKing, moves, n);
+
       }
       
       return n;

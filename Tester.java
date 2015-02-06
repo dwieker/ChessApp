@@ -3,7 +3,8 @@ import java.util.*;
 public class Tester{
    public static void main(String args[]){
       FENtest();
-      System.out.println(perftTest(4));
+      Board b = new Board(Board.STARTFEN);
+      System.out.println(perftTest(3,b));
    }
    
    public static void FENtest(){
@@ -52,8 +53,7 @@ public class Tester{
       
    }
    
-   public static int perftTest(int depth){
-      Board board = new Board(Board.STARTFEN);
+   public static int perftTest(int depth, Board board){
       int nodes = 0;
       Move[] moves = new Move[264];
       int n_moves;
@@ -65,7 +65,7 @@ public class Tester{
       n_moves = board.genMoves(moves);
       for(int i = 0; i < n_moves; i++) {
         mh = board.movePiece(moves[i]);
-        nodes += perftTest(depth - 1);
+        nodes += perftTest(depth - 1, board);
         board.unmovePiece(mh);
       }
       return nodes;
