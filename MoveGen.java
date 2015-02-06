@@ -88,7 +88,7 @@ public class MoveGen{
       for(int i = pos - 17; (i&0x88) == 0; i -= 17){
          temp = board.checkSquare(i);
          if(temp == null) moves[n++] = new Move(pos, i);
-          else if(temp.getType()*piece.getType() < 0){
+         else if(temp.getType()*piece.getType() < 0){
             moves[n++] = new Move(pos, i);
             break;
          }
@@ -144,14 +144,14 @@ public class MoveGen{
    public static int wPawnMoves(Board board, Piece piece, Move[] moves, int n){
       int pos = piece.getPos();
       
-      if(board.checkSquare(pos + 16) == null){
+      if( (((pos+16)&0x88) == 0) && board.checkSquare(pos + 16) == null){
          moves[n++] = new Move(pos, pos + 16);
          if(pos < 24 && pos > 15 && board.checkSquare(pos + 32) == null){
             moves[n++] = new Move(pos, pos + 32);
          }
       }
-      if(board.checkSquare(pos + 17) != null || pos + 17 == board.enPassant()) moves[n++] = new Move(pos, pos + 17);
-      if(board.checkSquare(pos + 15) != null || pos + 15 == board.enPassant()) moves[n++] = new Move(pos, pos + 15);
+      if(((pos+17)&0x88) == 0 && (board.checkSquare(pos + 17) != null || pos + 17 == board.enPassant())) moves[n++] = new Move(pos, pos + 17);
+      if(((pos+15)&0x88) == 0 && (board.checkSquare(pos + 15) != null || pos + 15 == board.enPassant())) moves[n++] = new Move(pos, pos + 15);
       
       return n;
    }
@@ -159,14 +159,14 @@ public class MoveGen{
    public static int bPawnMoves(Board board, Piece piece, Move[] moves, int n){
       int pos = piece.getPos();
       
-      if(board.checkSquare(pos - 16) == null){
+      if(((pos-16)&0x88) == 0 && board.checkSquare(pos - 16) == null){
          moves[n++] = new Move(pos, pos - 16);
          if(pos > 95 && pos < 104 && board.checkSquare(pos - 32) == null){
             moves[n++] = new Move(pos, pos - 32);
          }
       }
-      if(board.checkSquare(pos - 17) != null || pos - 17 == board.enPassant()) moves[n++] = new Move(pos, pos - 17);
-      if(board.checkSquare(pos - 15) != null || pos - 15 == board.enPassant()) moves[n++] = new Move(pos, pos - 15);
+      if(((pos-17)&0x88) == 0 && (board.checkSquare(pos - 17) != null || pos - 17 == board.enPassant())) moves[n++] = new Move(pos, pos - 17);
+      if(((pos-15)&0x88) == 0 && (board.checkSquare(pos - 15) != null || pos - 15 == board.enPassant())) moves[n++] = new Move(pos, pos - 15);
       
       return n;
    }
