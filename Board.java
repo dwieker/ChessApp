@@ -4,9 +4,7 @@ public class Board{
    static final int WHITE = 1;
    static final int BLACK = -1;
    static final String STARTFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-   static final String POSITION4 = "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1";
-   static final String TEST = "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1";
-   
+      
    private int curPlayer;
    private int move_count;
    private boolean[] wCastleRights = new boolean[2]; //first index is king side, second queen side
@@ -91,7 +89,7 @@ public class Board{
             squares[taken] = null;
          }
          else if(Math.abs(m.s2() - m.s1()) == 32){
-            enPassantSq = m.s2() + curPlayer;
+            enPassantSq = m.s2() + curPlayer*16;
          }
       }
       if(squares[m.s1()].getType() == Piece.PAWN && m.s2() > 111){
@@ -159,7 +157,7 @@ public class Board{
    
    
       if(mh.getCaptured() != null){
-         squares[mh.getMove().s2()] = mh.getCaptured();
+         squares[mh.getCaptured().getPos()] = mh.getCaptured();
          pieces.add(mh.getCaptured());
       
       }
@@ -268,33 +266,33 @@ public class Board{
       
       for(Piece p: pieces){
          if((type = p.getType()) * curPlayer > 0){
-            System.out.print(type + "   ");
+            //System.out.print(type + "   ");
             if(Math.abs(type) == Piece.KNIGHT){
                n = MoveGen.knightMoves(this, p, moves, n);
-               System.out.println(n);
+               //System.out.println(n);
             }
             else if(Math.abs(type) == Piece.BISHOP){
                n = MoveGen.checkDiagonals(this, p, moves, n);
-               System.out.println(n);
+               //System.out.println(n);
             }
             else if(Math.abs(type) == Piece.ROOK){
                n = MoveGen.checkRows(this, p, moves, n); 
-               System.out.println(n);
+               //System.out.println(n);
             }
             
             else if(Math.abs(type) == Piece.QUEEN){
                n = MoveGen.checkRows(this, p, moves, n);
                n = MoveGen.checkDiagonals(this, p, moves, n);
-               System.out.println(n);
+               //System.out.println(n);
             }
             else if(type == Piece.PAWN){
                n = MoveGen.wPawnMoves(this, p, moves, n);
-               System.out.println(n);
+               //System.out.println(n);
             }
             
             else if(type == Piece.pawn){
                n = MoveGen.bPawnMoves(this, p, moves, n);
-               System.out.println(n);
+               //System.out.println(n);
             }
          
          }
@@ -302,10 +300,22 @@ public class Board{
       
       }
       
-      if(curPlayer > 0) n = MoveGen.wKingMoves(this, wKing, moves, n); 
+      if(curPlayer == WHITE) n = MoveGen.wKingMoves(this, wKing, moves, n); 
       else n = MoveGen.bKingMoves(this, bKing, moves, n);
       
       return n;
+   }
+   
+   public int curPlayer(){
+      return curPlayer;
+   }
+   
+   public Piece wKing(){
+      return wKing;
+   }
+   
+   public Piece bKing(){
+      return bKing;
    }
    
 }

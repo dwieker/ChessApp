@@ -1,10 +1,16 @@
 import java.util.*;
 
 public class Tester{
+   private static String POSITION3 = "rnbqkb1r/pp1p1ppp/2p5/4P3/2B5/8/PPP1NnPP/RNBQK2R w KQkq - 0 6";
+   private static final String POSITION4 = "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1";
+   private static final String TEST = "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1";
+   private static final String POSITION2 = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -";
+
+
    public static void main(String args[]){
       FENtest();
-      Board b = new Board(Board.POSITION4);
-      System.out.println(perftTest(1,b));
+      Board b = new Board(POSITION2);
+      System.out.println(perftTest(2,b));
       
       
     /* b = new Board(Board.TEST);
@@ -65,6 +71,7 @@ public class Tester{
    
    public static int perftTest(int depth, Board board){
       int nodes = 0;
+      Piece temp;
       Move[] moves = new Move[264];
       int n_moves;
       MoveHistory mh;
@@ -72,11 +79,26 @@ public class Tester{
       
       if(depth == 0) return 1;
       
+      if(board.curPlayer() == board.WHITE) temp = board.wKing();
+      else temp = board.bKing();
+
+      
       n_moves = board.genMoves(moves);
       for(int i = 0; i < n_moves; i++) {
         mh = board.movePiece(moves[i]);
-        nodes += perftTest(depth - 1, board);
-        board.unmovePiece(mh);
+        
+       //nodes += perftTest(depth - 1, board);
+       //board.unmovePiece(mh);
+
+       
+        if(MoveGen.isKingChecked(board, temp))
+           board.unmovePiece(mh);
+           
+        else{     
+           nodes += perftTest(depth - 1, board);
+           board.unmovePiece(mh);
+        }
+        
       }
       return nodes;
            

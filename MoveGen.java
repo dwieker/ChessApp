@@ -1,3 +1,5 @@
+import java.lang.Math;
+
 public class MoveGen{
    
    private static int[] kingDeltas = {-1, 15, 16, 17, 1, -15, -16, -17};
@@ -109,8 +111,8 @@ public class MoveGen{
       if(board.whiteCastle(1) && board.checkSquare(1) == null && board.checkSquare(2) == null && board.checkSquare(3) == null && board.checkSquare(0) != null && board.checkSquare(0).getType() == Piece.ROOK){
          moves[n++] = new Move(pos,2);
       }
-      if(board.whiteCastle(0) && board.checkSquare(5) == null && board.checkSquare(6) == null && board.checkSquare(7)!= null && board.checkSquare(7).getType() == Piece.ROOK){
-         moves[n++] = new Move(pos, 6);
+      if(board.whiteCastle(0) && board.checkSquare(Piece.QUEEN) == null && board.checkSquare(Piece.KING) == null && board.checkSquare(7)!= null && board.checkSquare(7).getType() == Piece.ROOK){
+         moves[n++] = new Move(pos, Piece.KING);
       }
       return n;
    }
@@ -122,10 +124,10 @@ public class MoveGen{
          int move = pos + kingDeltas[i];
          if((move&0x88) == 0 && (board.checkSquare(move) == null || board.checkSquare(move).getType()*king.getType() < 0)) moves[n++] = new Move(pos, move);
       }
-      if(board.blackCastle(1) && board.checkSquare(113) == null && board.checkSquare(114) == null && board.checkSquare(115) == null && board.checkSquare(112) != null && board.checkSquare(112).getType() == 4){
+      if(board.blackCastle(1) && board.checkSquare(113) == null && board.checkSquare(114) == null && board.checkSquare(115) == null && board.checkSquare(112) != null && board.checkSquare(112).getType() == Piece.ROOK){
          moves[n++] = new Move(pos,114);
       }
-      if(board.blackCastle(0) && board.checkSquare(117) == null && board.checkSquare(118) == null && board.checkSquare(119)!= null && board.checkSquare(119).getType() == -4){
+      if(board.blackCastle(0) && board.checkSquare(117) == null && board.checkSquare(118) == null && board.checkSquare(119)!= null && board.checkSquare(119).getType() == -Piece.ROOK){
          moves[n++] = new Move(pos,118);
       }
       return n;
@@ -171,6 +173,100 @@ public class MoveGen{
       
       return n;
    }
+   
+   public static boolean isKingChecked(Board board, Piece king){
+         
+       int c = (int) -Math.signum(king.getType());  
+         
+       //check right
+       for(int i = king.pos + 1; (i&0x88) == 0; i++){
+           if(board.checkSquare(i) == null) continue;
+           if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 1 == king.pos)){
+               return true;
+           }
+           break;
+       }
+       
+       for(int i = king.pos - 1; (i&0x88) == 0; i--){ //check left
+           if(board.checkSquare(i) == null) continue;
+           if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 1 == king.pos)){
+               return true;
+           }
+           break;
+       }
+       
+       for(int i = king.pos + 16; (i&0x88) == 0; i+= 16){ //check up
+           if(board.checkSquare(i) == null) continue;
+           if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 16 == king.pos)){
+               return true;
+           }
+           break;
+       }
+       
+       for(int i = king.pos - 16; (i&0x88) == 0; i-= 16){ //check down
+           if(board.checkSquare(i) == null) continue;
+           if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 16 == king.pos)){
+               return true;
+           }
+           break;
+       }
+       
+       for(int i = king.pos + 17; (i&0x88) == 0; i+= 17){ //check up right
+           if(board.checkSquare(i) == null) continue;
+           if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 17 == king.pos)){
+               return true;
+           }
+           break;
+       }
+       
+       for(int i = king.pos + 15; (i&0x88) == 0; i+= 15){//check up left
+           if(board.checkSquare(i) == null) continue;
+           if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 15 == king.pos)){
+               return true;
+           }
+           break;
+       }
+       
+       for(int i = king.pos - 17; (i&0x88) == 0; i-= 17){ //check down left
+           if(board.checkSquare(i) == null) continue;
+           if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 17 == king.pos)){
+               return true;
+           }
+           break;
+       }
+       for(int i = king.pos - 15; (i&0x88) == 0; i-= 15){ //check down right
+           if(board.checkSquare(i) == null) continue;
+           if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 15 == king.pos)){
+               return true;
+           }
+           break;
+       }
+       
+       //check for knights
+       int pos;
+       for(int i = 0; i < 8; i++){
+           pos = king.pos + knightDeltas[i];
+           if( (pos&0x88) == 0){
+               if(board.checkSquare(pos) != null && board.checkSquare(pos).getType() == Piece.KNIGHT*c)
+                   return true;     
+           }
+       }
+       
+       
+       //check for pawns
+       
+       if(1==2){}
+       
+       if( ((king.pos + 17*-c)&0x88) == 0 && board.checkSquare(king.pos + 17*-c) != null && board.checkSquare(king.pos + 17*-c).getType() == Piece.PAWN*c) return true;   
+       if( ((king.pos + 15*-c)&0x88) == 0 && board.checkSquare(king.pos + 15*-c) != null && board.checkSquare(king.pos + 15*-c).getType() == Piece.PAWN*c) return true;   
+       
+       
+       
+       return false;
+    
+   }
+
+   
    
        
       
