@@ -33,7 +33,7 @@ public class MoveHistory{
       return w_castle_rights;
    }
    
-   public int did_castle()
+   public int didCastle()
    {
       return did_castle;
    }

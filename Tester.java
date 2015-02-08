@@ -10,7 +10,7 @@ public class Tester{
    public static void main(String args[]){
       FENtest();
       Board b = new Board(POSITION2);
-      System.out.println(perftTest(2,b));
+      System.out.println(perftTest(3,b));
       
       
     /* b = new Board(Board.TEST);
@@ -77,29 +77,37 @@ public class Tester{
       MoveHistory mh;
       
       
-      if(depth == 0) return 1;
+      if(depth == 0) 
+         return 1;
       
       if(board.curPlayer() == board.WHITE) temp = board.wKing();
       else temp = board.bKing();
-
+   
       
       n_moves = board.genMoves(moves);
       for(int i = 0; i < n_moves; i++) {
-        mh = board.movePiece(moves[i]);
+         mh = board.movePiece(moves[i]);
         
        //nodes += perftTest(depth - 1, board);
        //board.unmovePiece(mh);
-
+      
        
-        if(MoveGen.isKingChecked(board, temp))
-           board.unmovePiece(mh);
-           
-        else{     
-           nodes += perftTest(depth - 1, board);
-           board.unmovePiece(mh);
-        }
+         if(MoveGen.isKingChecked(board, temp)){
+            board.unmovePiece(mh);
+            board.subtractCastle();
+         }
+         else if(mh.didCastle() > 0 && MoveGen.isKingChecked(board, new Piece(temp.getType(), Math.abs(mh.getMove().s1() + mh.getMove().s2())/2))){
+            board.unmovePiece(mh);  
+            board.subtractCastle();
+         }
+         else{     
+            nodes += perftTest(depth - 1, board);
+            board.unmovePiece(mh);
+         }
         
       }
+      
+      board.counts();
       return nodes;
            
    }

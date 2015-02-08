@@ -11,7 +11,7 @@ public class Board{
    private boolean[] bCastleRights = new boolean[2];
    private int enPassantSq = -1;
    private Piece[] squares;
-private int epcount = 0;
+private int epcount = 0, castlecount = 0;
    private LinkedList<Piece> pieces;
    private Piece wKing;
    private Piece bKing;
@@ -85,7 +85,7 @@ private int epcount = 0;
       else if(Math.abs(squares[m.s1()].getType()) == Piece.PAWN){
          if((m.s2() - m.s1()) % 16 != 0){
             taken = m.s2() + curPlayer*16;
-            System.out.println("EP " + m.s2() + " " +(++epcount));
+            epcount++;
             mh.setCaptured(squares[taken]);
             pieces.remove(squares[taken]);
             squares[taken] = null;
@@ -142,6 +142,7 @@ private int epcount = 0;
          else if(m.s2() == 119) bCastleRights[0] = false;
       }
       
+      if(mh.didCastle() > 0)  castlecount++;
       squares[m.s2()] = squares[m.s1()];
       squares[m.s2()].setPos(m.s2());
       squares[m.s1()] = null;
@@ -171,26 +172,26 @@ private int epcount = 0;
          else
             squares[mh.getMove().s1()].setType(Piece.pawn, 'p', 100);
       }
-      else if(mh.did_castle() > 0) {
-         if(mh.did_castle() == 1){
+      else if(mh.didCastle() > 0) {
+         if(mh.didCastle() == 1){
             wCastleRights[0] = true;
             squares[0] = squares[3];
             squares[3] = null;
             squares[0].setPos(0);
          }
-         else if(mh.did_castle() == 2){
+         else if(mh.didCastle() == 2){
             wCastleRights[1] = true;
             squares[7] = squares[5];
             squares[5] = null;
             squares[7].setPos(7);
          }
-         else if(mh.did_castle() == 3){
+         else if(mh.didCastle() == 3){
             bCastleRights[0] = true;
             squares[112] = squares[115];
             squares[115] = null;
             squares[112].setPos(112);
          }
-         else if(mh.did_castle() == 4){
+         else if(mh.didCastle() == 4){
             bCastleRights[1] = true;
             squares[119] = squares[117];
             squares[117] = null;
@@ -322,4 +323,12 @@ private int epcount = 0;
       return bKing;
    }
    
+   
+   public void counts(){
+      System.out.println("EP " + epcount + " castling " + castlecount);
+  }
+  
+  public void subtractCastle(){
+     castlecount--;
+  }
 }

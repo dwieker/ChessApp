@@ -153,10 +153,10 @@ public class MoveGen{
          int move = pos + kingDeltas[i];
          if((move&0x88) == 0 && (board.checkSquare(move) == null || board.checkSquare(move).getType()*king.getType() < 0)) moves[n++] = new Move(pos, move);
       }
-      if(board.blackCastle(1) && board.checkSquare(113) == null && board.checkSquare(114) == null && board.checkSquare(115) == null && board.checkSquare(112) != null && board.checkSquare(112).getType() == Piece.ROOK){
+      if(board.blackCastle(1) && board.checkSquare(113) == null && board.checkSquare(114) == null && board.checkSquare(115) == null && board.checkSquare(112) != null && board.checkSquare(112).getType() == Piece.rook){
          moves[n++] = new Move(pos,114);
       }
-      if(board.blackCastle(0) && board.checkSquare(117) == null && board.checkSquare(118) == null && board.checkSquare(119)!= null && board.checkSquare(119).getType() == -Piece.ROOK){
+      if(board.blackCastle(0) && board.checkSquare(117) == null && board.checkSquare(118) == null && board.checkSquare(119)!= null && board.checkSquare(119).getType() == Piece.rook){
          moves[n++] = new Move(pos,118);
       }
       return n;
