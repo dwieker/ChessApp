@@ -11,6 +11,7 @@ public class Board{
    private boolean[] bCastleRights = new boolean[2];
    private int enPassantSq = -1;
    private Piece[] squares;
+private int epcount = 0;
    private LinkedList<Piece> pieces;
    private Piece wKing;
    private Piece bKing;
@@ -84,6 +85,7 @@ public class Board{
       else if(Math.abs(squares[m.s1()].getType()) == Piece.PAWN){
          if((m.s2() - m.s1()) % 16 != 0){
             taken = m.s2() + curPlayer*16;
+            System.out.println("EP " + m.s2() + " " +(++epcount));
             mh.setCaptured(squares[taken]);
             pieces.remove(squares[taken]);
             squares[taken] = null;
@@ -93,10 +95,12 @@ public class Board{
          }
       }
       if(squares[m.s1()].getType() == Piece.PAWN && m.s2() > 111){
+        // System.out.println("white promo " + m);
          squares[m.s1()].setType(Piece.QUEEN, 'Q', 900);
          mh.setPromo();
       }
       else if(squares[m.s1()].getType() == Piece.pawn && m.s2() < 8){
+        // System.out.println("black promo " + m);
          squares[m.s1()].setType(Piece.queen, 'q', 900);
          mh.setPromo();
       }
@@ -272,17 +276,17 @@ public class Board{
                //System.out.println(n);
             }
             else if(Math.abs(type) == Piece.BISHOP){
-               n = MoveGen.checkDiagonals(this, p, moves, n);
+               n = MoveGen.checkRowsDiagonals(this, p, moves, n, 'd');
                //System.out.println(n);
             }
             else if(Math.abs(type) == Piece.ROOK){
-               n = MoveGen.checkRows(this, p, moves, n); 
+               n = MoveGen.checkRowsDiagonals(this, p, moves, n, 'r'); 
                //System.out.println(n);
             }
             
             else if(Math.abs(type) == Piece.QUEEN){
-               n = MoveGen.checkRows(this, p, moves, n);
-               n = MoveGen.checkDiagonals(this, p, moves, n);
+               n = MoveGen.checkRowsDiagonals(this, p, moves, n, 'r');
+               n = MoveGen.checkRowsDiagonals(this, p, moves, n, 'd');
                //System.out.println(n);
             }
             else if(type == Piece.PAWN){

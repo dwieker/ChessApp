@@ -5,8 +5,37 @@ public class MoveGen{
    private static int[] kingDeltas = {-1, 15, 16, 17, 1, -15, -16, -17};
 
    private static int[] knightDeltas =  {31, 33, 18, -14, -31, -33, 14, -18};
+   
+   private static int[] rows = {1, -1, 16, -16};
+   
+   private static int[] diagonals = {15, -15, 17, -17};
+   
+   public static int checkRowsDiagonals(Board board, Piece piece, Move[] moves, int n, char x){
+      Piece temp;
+      int pos = piece.getPos(), delta;
+      int[] directions;
       
-   public static int checkRows(Board board, Piece piece, Move[] moves, int n){
+      if(x == 'r') directions = rows;
+      else directions = diagonals;
+      
+      for(int i = 0; i < 4; i++){
+         delta = directions[i];
+         for(int j = pos + delta; (j&0x88) == 0; j += delta){
+            temp = board.checkSquare(j);
+            if(temp == null) moves[n++] = new Move(pos, j);
+            else if(temp.getType()*piece.getType() < 0){
+               moves[n++] = new Move(pos, j);
+               break;
+            }
+            else 
+               break;
+         }
+      }
+      
+      return n;
+   }
+      
+  /* public static int checkRows(Board board, Piece piece, Move[] moves, int n){
       Piece temp;
       int pos = piece.getPos();
       for(int i = pos + 1; (i&0x88) == 0; i++){
@@ -99,7 +128,7 @@ public class MoveGen{
       }
       
       return n;
-   }
+   }*/
    
    public static int wKingMoves(Board board, Piece king, Move[] moves, int n){
       Piece temp;
@@ -176,93 +205,103 @@ public class MoveGen{
    
    public static boolean isKingChecked(Board board, Piece king){
          
-       int c = (int) -Math.signum(king.getType());  
+      int c = (int) -Math.signum(king.getType());  
          
        //check right
-       for(int i = king.pos + 1; (i&0x88) == 0; i++){
-           if(board.checkSquare(i) == null) continue;
-           if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 1 == king.pos)){
-               return true;
-           }
-           break;
-       }
+      for(int i = king.pos + 1; (i&0x88) == 0; i++){
+         if(board.checkSquare(i) == null) 
+            continue;
+         if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 1 == king.pos)){
+            return true;
+         }
+         break;
+      }
        
-       for(int i = king.pos - 1; (i&0x88) == 0; i--){ //check left
-           if(board.checkSquare(i) == null) continue;
-           if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 1 == king.pos)){
-               return true;
-           }
-           break;
-       }
+      for(int i = king.pos - 1; (i&0x88) == 0; i--){ //check left
+         if(board.checkSquare(i) == null) 
+            continue;
+         if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 1 == king.pos)){
+            return true;
+         }
+         break;
+      }
        
-       for(int i = king.pos + 16; (i&0x88) == 0; i+= 16){ //check up
-           if(board.checkSquare(i) == null) continue;
-           if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 16 == king.pos)){
-               return true;
-           }
-           break;
-       }
+      for(int i = king.pos + 16; (i&0x88) == 0; i+= 16){ //check up
+         if(board.checkSquare(i) == null) 
+            continue;
+         if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 16 == king.pos)){
+            return true;
+         }
+         break;
+      }
        
-       for(int i = king.pos - 16; (i&0x88) == 0; i-= 16){ //check down
-           if(board.checkSquare(i) == null) continue;
-           if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 16 == king.pos)){
-               return true;
-           }
-           break;
-       }
+      for(int i = king.pos - 16; (i&0x88) == 0; i-= 16){ //check down
+         if(board.checkSquare(i) == null) 
+            continue;
+         if(board.checkSquare(i).getType() == Piece.ROOK*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 16 == king.pos)){
+            return true;
+         }
+         break;
+      }
        
-       for(int i = king.pos + 17; (i&0x88) == 0; i+= 17){ //check up right
-           if(board.checkSquare(i) == null) continue;
-           if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 17 == king.pos)){
-               return true;
-           }
-           break;
-       }
+      for(int i = king.pos + 17; (i&0x88) == 0; i+= 17){ //check up right
+         if(board.checkSquare(i) == null) 
+            continue;
+         if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 17 == king.pos)){
+            return true;
+         }
+         break;
+      }
        
-       for(int i = king.pos + 15; (i&0x88) == 0; i+= 15){//check up left
-           if(board.checkSquare(i) == null) continue;
-           if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 15 == king.pos)){
-               return true;
-           }
-           break;
-       }
+      for(int i = king.pos + 15; (i&0x88) == 0; i+= 15){//check up left
+         if(board.checkSquare(i) == null) 
+            continue;
+         if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i - 15 == king.pos)){
+            return true;
+         }
+         break;
+      }
        
-       for(int i = king.pos - 17; (i&0x88) == 0; i-= 17){ //check down left
-           if(board.checkSquare(i) == null) continue;
-           if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 17 == king.pos)){
-               return true;
-           }
-           break;
-       }
-       for(int i = king.pos - 15; (i&0x88) == 0; i-= 15){ //check down right
-           if(board.checkSquare(i) == null) continue;
-           if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 15 == king.pos)){
-               return true;
-           }
-           break;
-       }
+      for(int i = king.pos - 17; (i&0x88) == 0; i-= 17){ //check down left
+         if(board.checkSquare(i) == null) 
+            continue;
+         if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 17 == king.pos)){
+            return true;
+         }
+         break;
+      }
+      for(int i = king.pos - 15; (i&0x88) == 0; i-= 15){ //check down right
+         if(board.checkSquare(i) == null) 
+            continue;
+         if(board.checkSquare(i).getType() == 3*c || board.checkSquare(i).getType() == Piece.QUEEN*c || (board.checkSquare(i).getType() == Piece.KING*c && i + 15 == king.pos)){
+            return true;
+         }
+         break;
+      }
        
        //check for knights
-       int pos;
-       for(int i = 0; i < 8; i++){
-           pos = king.pos + knightDeltas[i];
-           if( (pos&0x88) == 0){
-               if(board.checkSquare(pos) != null && board.checkSquare(pos).getType() == Piece.KNIGHT*c)
-                   return true;     
-           }
-       }
+      int pos;
+      for(int i = 0; i < 8; i++){
+         pos = king.pos + knightDeltas[i];
+         if( (pos&0x88) == 0){
+            if(board.checkSquare(pos) != null && board.checkSquare(pos).getType() == Piece.KNIGHT*c)
+               return true;     
+         }
+      }
        
        
        //check for pawns
        
-       if(1==2){}
+      if(1==2){}
        
-       if( ((king.pos + 17*-c)&0x88) == 0 && board.checkSquare(king.pos + 17*-c) != null && board.checkSquare(king.pos + 17*-c).getType() == Piece.PAWN*c) return true;   
-       if( ((king.pos + 15*-c)&0x88) == 0 && board.checkSquare(king.pos + 15*-c) != null && board.checkSquare(king.pos + 15*-c).getType() == Piece.PAWN*c) return true;   
+      if( ((king.pos + 17*-c)&0x88) == 0 && board.checkSquare(king.pos + 17*-c) != null && board.checkSquare(king.pos + 17*-c).getType() == Piece.PAWN*c) 
+         return true;   
+      if( ((king.pos + 15*-c)&0x88) == 0 && board.checkSquare(king.pos + 15*-c) != null && board.checkSquare(king.pos + 15*-c).getType() == Piece.PAWN*c) 
+         return true;   
        
        
        
-       return false;
+      return false;
     
    }
 
