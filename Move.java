@@ -1,3 +1,5 @@
+import java.util.Hashtable;
+
 public class Move{
 
    private int s1;
@@ -10,20 +12,15 @@ public class Move{
    }
    
    public Move(char[] m){
-      char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g' , 'h'};
-      char[] digits = {'1','2','3','4','5','6','7','8'};
-      int x_1 = 0, y_1 = 0, x_2 = 0, y_2 = 0;
+      Hashtable<Character, Integer> dict = new Hashtable<Character, Integer>();
+      dict.put('a', 1); dict.put('b', 2); dict.put('c', 3); dict.put('d', 4); 
+      dict.put('e', 5); dict.put('f', 6); dict.put('g', 7); dict.put('h', 8);
       
-      for(int i = 0; i < 8; i++){
-         if(m[0] == letters[i])
-            x_1 = i;
-         if(m[1] == digits[i])
-            y_1 = i;
-         if(m[2] == letters[i])
-            x_2 = i;
-         if(m[3] == digits[i])
-            y_2 = i;
-      }
+      int x_1 = dict.get(m[0]);
+      int y_1 = dict.get(m[1]);
+      int x_2 = dict.get(m[2]);
+      int y_2 = dict.get(m[3]);
+   
       s1 = y_1 * 16 + x_1;
       s2 = y_2 * 16 + x_2;
       

@@ -13,21 +13,17 @@ public class Piece{
    static final int queen = -5;
    static final int king = -6;
    
-   int type;
-   int pos; // location in the squares array
-   char letter;
-   int value;
-   int[] moves;
-   int move;
-  
+   private int type;
+   private int pos; // location in the squares array
+   private char letter;
+   private int value;
+     
    
    public Piece(int type, int pos){
-      moves = new int[21];
-      move = 0;
       this.type = type;
       this.pos = pos;
       
-      if(type == PAWN){letter = 'P';value = 100;}
+      if(type == PAWN){letter = 'P'; value = 100;}
       else if(type == KNIGHT){letter = 'N';value = 320;}
       else if(type == BISHOP){letter = 'B';value = 330;}
       else if(type == ROOK){letter = 'R';value = 500;}
@@ -78,13 +74,9 @@ public class Piece{
       return pos;
    }
    
-   public void resetMoves(){
-      move = 0;
+   public char getLetter(){
+      return letter;
    }
    
-   public boolean nextMove(int m){
-      moves[move] = m;
-      move++;
-      return moves[move - 1] != -1;
-   }
+   
 }

@@ -6,14 +6,14 @@ public class Board{
    static final String STARTFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
       
    private int curPlayer;
-   private int move_count;
+   private int moveCount;
    private boolean[] wCastleRights = new boolean[2]; //first index is king side, second queen side
    private boolean[] bCastleRights = new boolean[2];
-   private int enPassantSq = -1;
-   private Piece[] squares;
-private int epcount = 0, castlecount = 0;
-   private LinkedList<Piece> pieces;
-   private Piece wKing;
+   private int enPassantSq = -1; // -1 implies no en passant possible
+   private Piece[] squares; //squares of the board. no piece on that square = null
+   private int epcount = 0, castlecount = 0;  // for debugging
+   private LinkedList<Piece> pieces; //linked list of our pieces. useful to iterate through and gen moves
+   private Piece wKing; 
    private Piece bKing;
       
    public Board(String FEN){
@@ -37,13 +37,13 @@ private int epcount = 0, castlecount = 0;
          
          else if(FEN.charAt(i) == ' '){
             
-            //read current player
+            //Read current player
             i++;
             if(FEN.charAt(i) == 'w') curPlayer = WHITE;
             else if(FEN.charAt(i) == 'b') curPlayer = BLACK;
               
             //Read castle rights
-            i++; i++;
+            i+=2;
             while(FEN.charAt(i) != '-'  && FEN.charAt(i) != ' ' ){
                if(FEN.charAt(i) == 'K') wCastleRights[0] = true;
                else if(FEN.charAt(i) == 'Q') wCastleRights[1] = true;
@@ -57,8 +57,8 @@ private int epcount = 0, castlecount = 0;
          
          else{
             temp = new Piece(FEN.charAt(i), row*16 + col);
-            if(temp.letter == 'K') wKing = temp;
-            else if(temp.letter == 'k') bKing = temp;
+            if(temp.getLetter() == 'K') wKing = temp;
+            else if(temp.getLetter() == 'k') bKing = temp;
             else pieces.add(temp);
             
             squares[row*16 + col] = temp;
@@ -79,14 +79,14 @@ private int epcount = 0, castlecount = 0;
       enPassantSq = -1;
       int taken;
       
-      if (squares[m.s2()] != null){
-         mh.setCaptured(squares[m.s2()]);   
-         pieces.remove(squares[m.s2()]);
+      if (squares[m.s2()] != null){ // a piece is being captured!
+         mh.setCaptured(squares[m.s2()]);   // save the piece to mh
+         pieces.remove(squares[m.s2()]); //remove it from the linked list
       }
-      else if(Math.abs(squares[m.s1()].getType()) == Piece.PAWN){
-         if((m.s2() - m.s1()) % 16 != 0){
+      else if(Math.abs(squares[m.s1()].getType()) == Piece.PAWN){ //pawn moved, no capture
+         if((m.s2() - m.s1()) % 16 != 0){ //diagoal move. it's an enpassant!
             taken = m.s2() + curPlayer*16;
-            epcount++;
+            epcount++; //for debugging
             mh.setCaptured(squares[taken]);
             pieces.remove(squares[taken]);
             squares[taken] = null;
@@ -95,6 +95,7 @@ private int epcount = 0, castlecount = 0;
             enPassantSq = m.s2() + curPlayer*16;
          }
       }
+      
       if(squares[m.s1()].getType() == Piece.PAWN && m.s2() > 111){
         // System.out.println("white promo " + m);
          squares[m.s1()].setType(Piece.QUEEN, 'Q', 900);
@@ -105,7 +106,7 @@ private int epcount = 0, castlecount = 0;
          squares[m.s1()].setType(Piece.queen, 'q', 900);
          mh.setPromo();
       }
-      if(squares[m.s1()].getType() == Piece.KING){
+      else if(squares[m.s1()].getType() == Piece.KING){
          wCastleRights[0] = wCastleRights[1] = false;
          if(m.s1() == 4 && m.s2() == 6){
             squares[5] = squares[7];
@@ -135,15 +136,14 @@ private int epcount = 0, castlecount = 0;
             mh.castled(3);
          }
       }
-      else if(squares[m.s1()].getType() == Piece.ROOK || squares[m.s1()].getType() == Piece.rook)
-      {
+      else if(squares[m.s1()].getType() == Piece.ROOK || squares[m.s1()].getType() == Piece.rook){
          if(m.s1() == 7) wCastleRights[0] = false;
          else if(m.s1() == 0) wCastleRights[1] = false;
-         else if(m.s2() == 112) bCastleRights[1] = false;
-         else if(m.s2() == 119) bCastleRights[0] = false;
+         else if(m.s1() == 112) bCastleRights[1] = false;
+         else if(m.s1() == 119) bCastleRights[0] = false;
       }
       
-      if(mh.didCastle() > 0)  castlecount++;
+      if(mh.didCastle() > 0)  castlecount++; // for debugging
       squares[m.s2()] = squares[m.s1()];
       squares[m.s2()].setPos(m.s2());
       squares[m.s1()] = null;
@@ -153,27 +153,30 @@ private int epcount = 0, castlecount = 0;
    
    
    void unmovePiece(MoveHistory mh){
+      int s1 = mh.getMove().s1();
+      int s2 = mh.getMove().s2();
+   
       curPlayer *= -1;
-      squares[mh.getMove().s1()] = squares[mh.getMove().s2()];  //move piece back to previous square
-      squares[mh.getMove().s1()].setPos(mh.getMove().s1()); //update pieces position
-      squares[mh.getMove().s2()] = null; //empty old square
+      squares[s1] = squares[s2]; squares[s2] = null; //move piece back to previous square
+      squares[s1].setPos(s1); //update pieces position
+      
       bCastleRights = mh.get_b_rights();
       wCastleRights = mh.get_w_rights();
       enPassantSq =  mh.getEnPassant();
+      
    
-   
+      
       if(mh.getCaptured() != null){
          squares[mh.getCaptured().getPos()] = mh.getCaptured();
-         pieces.add(mh.getCaptured());
-      
+         pieces.add(mh.getCaptured());  
       }
       if(mh.getPromo()){
          if(curPlayer == WHITE)
-            squares[mh.getMove().s1()].setType(Piece.PAWN, 'P', 100);
+            squares[s1].setType(Piece.PAWN, 'P', 100);
          else
-            squares[mh.getMove().s1()].setType(Piece.pawn, 'p', 100);
+            squares[s1].setType(Piece.pawn, 'p', 100);
       }
-      else if(mh.didCastle() > 0) {
+      else if(mh.didCastle() > 0) {   
          if(mh.didCastle() == 1){
             wCastleRights[0] = true;
             squares[0] = squares[3];
@@ -205,15 +208,16 @@ private int epcount = 0, castlecount = 0;
    
    public String printFEN(){
       int blanks = 0;
-      String print = new String("");;
-      for(int i = 7; i > -1; i--){
+      String print = new String("");
+      
+      for(int i = 7; i >= 0; i--){
          for(int j = 0; j < 8; j++){
             if(squares[i*16 + j] != null){
                if(blanks > 0){
                   print += blanks;
                   blanks = 0;
                }
-               print += squares[i*16 + j].letter;
+               print += squares[i*16 + j].getLetter();
             }
             else blanks++;
          }

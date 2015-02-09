@@ -155,7 +155,7 @@ public class MoveGen{
             if(temp == null) 
                continue;
              
-            if(temp.getType() == Piece.BISHOP*c || temp.getType() == Piece.QUEEN*c || (temp.getType() == Piece.KING*c && i - 17 == king.pos))
+            if(temp.getType() == Piece.BISHOP*c || temp.getType() == Piece.QUEEN*c || (temp.getType() == Piece.KING*c && i - 17 == pos))
                return true;
          
             break; 
@@ -180,16 +180,10 @@ public class MoveGen{
          return true;   
       if( ((pos - 15*c)&0x88) == 0 && board.checkSquare(pos - 15*c) != null && board.checkSquare(pos - 15*c).getType() == Piece.PAWN*c) 
          return true;   
-       
-       
-       
+             
       return false;
     
-   }
-
-   
-   
-       
+   }       
       
       
 }
