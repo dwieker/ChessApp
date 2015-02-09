@@ -325,7 +325,7 @@ private int epcount = 0, castlecount = 0;
    
    
    public void counts(){
-      System.out.println("EP " + epcount + " castling " + castlecount);
+     // System.out.println("EP " + epcount + " castling " + castlecount);
   }
   
   public void subtractCastle(){
