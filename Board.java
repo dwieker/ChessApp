@@ -78,6 +78,7 @@ private int epcount = 0, castlecount = 0;
       curPlayer *= -1;
       enPassantSq = -1;
       int taken;
+      
       if (squares[m.s2()] != null){
          mh.setCaptured(squares[m.s2()]);   
          pieces.remove(squares[m.s2()]);
@@ -277,17 +278,17 @@ private int epcount = 0, castlecount = 0;
                //System.out.println(n);
             }
             else if(Math.abs(type) == Piece.BISHOP){
-               n = MoveGen.checkRowsDiagonals(this, p, moves, n, 'd');
+               n = MoveGen.checkDiagonals(this, p, moves, n);
                //System.out.println(n);
             }
             else if(Math.abs(type) == Piece.ROOK){
-               n = MoveGen.checkRowsDiagonals(this, p, moves, n, 'r'); 
+               n = MoveGen.checkRows(this, p, moves, n); 
                //System.out.println(n);
             }
             
             else if(Math.abs(type) == Piece.QUEEN){
-               n = MoveGen.checkRowsDiagonals(this, p, moves, n, 'r');
-               n = MoveGen.checkRowsDiagonals(this, p, moves, n, 'd');
+               n = MoveGen.checkRows(this, p, moves, n);
+               n = MoveGen.checkDiagonals(this, p, moves, n);
                //System.out.println(n);
             }
             else if(type == Piece.PAWN){
