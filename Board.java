@@ -1,11 +1,9 @@
 import java.util.*;
 
 public class Board{
-   static final int WHITE = 1;
-   static final int BLACK = -1;
    static final String STARTFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
       
-   private int curPlayer;
+   private char curPlayer;
    private int moveCount;
    private boolean[] wCastleRights = new boolean[2]; //first index is king side, second queen side
    private boolean[] bCastleRights = new boolean[2];
@@ -39,8 +37,8 @@ public class Board{
             
             //Read current player
             i++;
-            if(FEN.charAt(i) == 'w') curPlayer = WHITE;
-            else if(FEN.charAt(i) == 'b') curPlayer = BLACK;
+            curPlayer = FEN.charAt(i);
+            
               
             //Read castle rights
             i+=2;
@@ -56,11 +54,24 @@ public class Board{
          }
          
          else{
-            temp = new Piece(FEN.charAt(i), row*16 + col);
-            if(temp.getLetter() == 'K') wKing = temp;
-            else if(temp.getLetter() == 'k') bKing = temp;
-            else pieces.add(temp);
-            
+         
+            if(FEN.charAt(i) == 'p') pieces.add(temp = new Pawn('b', row*16 + col));
+            else if(FEN.charAt(i) == 'P') pieces.add(temp = new Pawn('w', row*16 + col));
+            else if(FEN.charAt(i) == 'b') pieces.add(temp = new Bishop('b', row*16 + col));
+            else if(FEN.charAt(i) == 'B') pieces.add(temp = new Bishop('w', row*16 + col));
+            else if(FEN.charAt(i) == 'n') pieces.add(temp = new Knight('b', row*16 + col));
+            else if(FEN.charAt(i) == 'N') pieces.add(temp = new Knight('w', row*16 + col));
+            else if(FEN.charAt(i) == 'r') pieces.add(temp = new Rook('b', row*16 + col));
+            else if(FEN.charAt(i) == 'R') pieces.add(temp = new Rook('w', row*16 + col));
+            else if(FEN.charAt(i) == 'q') pieces.add(temp = new Queen('b', row*16 + col));
+            else if(FEN.charAt(i) == 'Q') pieces.add(temp = new Queen('w', row*16 + col));      
+            else if(FEN.charAt(i) == 'k') bKing = temp = new King('b', row*16 + col);
+            else if(FEN.charAt(i) == 'K') wKing = temp = new King('w', row*16 + col);
+            else{
+                temp = null;
+                System.out.println("temp assigned to null");
+            }
+                       
             squares[row*16 + col] = temp;
             col++;
          }
@@ -75,7 +86,7 @@ public class Board{
    public MoveHistory movePiece(Move m){
    
       MoveHistory mh = new MoveHistory(m, bCastleRights, wCastleRights, enPassantSq);
-      curPlayer *= -1;
+      swapCurPlayer();
       enPassantSq = -1;
       int taken;
       
@@ -83,7 +94,7 @@ public class Board{
          mh.setCaptured(squares[m.s2()]);   // save the piece to mh
          pieces.remove(squares[m.s2()]); //remove it from the linked list
       }
-      else if(Math.abs(squares[m.s1()].getType()) == Piece.PAWN){ //pawn moved, no capture
+      else if(squares[m.s1()].getClass() == Pawn.class){ //pawn moved, no capture
          if((m.s2() - m.s1()) % 16 != 0){ //diagoal move. it's an enpassant!
             taken = m.s2() + curPlayer*16;
             epcount++; //for debugging
@@ -96,17 +107,22 @@ public class Board{
          }
       }
       
-      if(squares[m.s1()].getType() == Piece.PAWN && m.s2() > 111){
+      if(squares[m.s1()].getClass() == Pawn.class && m.s2() > 111){
         // System.out.println("white promo " + m);
-         squares[m.s1()].setType(Piece.QUEEN, 'Q', 900);
+         pieces.remove(squares[m.s1()]);
+         squares[m.s1()] = new Queen('w', m.s2());
+         pieces.add(squares[m.s1()]);
          mh.setPromo();
       }
-      else if(squares[m.s1()].getType() == Piece.pawn && m.s2() < 8){
+      else if(squares[m.s1()].getClass() == Pawn.class && m.s2() < 8){
         // System.out.println("black promo " + m);
-         squares[m.s1()].setType(Piece.queen, 'q', 900);
+         pieces.remove(squares[m.s1()]);
+         squares[m.s1()] = new Queen('b', m.s2());
+         pieces.add(squares[m.s1()]);
          mh.setPromo();
+
       }
-      else if(squares[m.s1()].getType() == Piece.KING){
+      else if(squares[m.s1()].getClass() == King.class){
          wCastleRights[0] = wCastleRights[1] = false;
          if(m.s1() == 4 && m.s2() == 6){
             squares[5] = squares[7];
@@ -121,7 +137,7 @@ public class Board{
             mh.castled(1);
          }
       }
-      else if(squares[m.s1()].getType() == Piece.king){
+      else if(squares[m.s1()].getClass() == King.class){
          bCastleRights[0] = bCastleRights[1] = false;
          if(m.s1() == 116 && m.s2() == 118){
             squares[117] = squares[119];
@@ -136,7 +152,7 @@ public class Board{
             mh.castled(3);
          }
       }
-      else if(squares[m.s1()].getType() == Piece.ROOK || squares[m.s1()].getType() == Piece.rook){
+      else if(squares[m.s1()].getClass() == Rook.class){
          if(m.s1() == 7) wCastleRights[0] = false;
          else if(m.s1() == 0) wCastleRights[1] = false;
          else if(m.s1() == 112) bCastleRights[1] = false;
@@ -156,7 +172,7 @@ public class Board{
       int s1 = mh.getMove().s1();
       int s2 = mh.getMove().s2();
    
-      curPlayer *= -1;
+      swapCurPlayer();
       squares[s1] = squares[s2]; squares[s2] = null; //move piece back to previous square
       squares[s1].setPos(s1); //update pieces position
       
@@ -171,10 +187,9 @@ public class Board{
          pieces.add(mh.getCaptured());  
       }
       if(mh.getPromo()){
-         if(curPlayer == WHITE)
-            squares[s1].setType(Piece.PAWN, 'P', 100);
-         else
-            squares[s1].setType(Piece.pawn, 'p', 100);
+         pieces.remove(squares[s1]);
+         squares[s1] = new Pawn(curPlayer, s1);
+         pieces.add(squares[s1]);
       }
       else if(mh.didCastle() > 0) {   
          if(mh.didCastle() == 1){
@@ -218,7 +233,7 @@ public class Board{
                   blanks = 0;
                }
                print += squares[i*16 + j].getLetter();
-            }
+             }
             else blanks++;
          }
          if(blanks > 0) print += blanks;
@@ -230,8 +245,7 @@ public class Board{
       print += " ";
       
       //print current player
-      if(curPlayer == WHITE)  print += "w";
-      else if(curPlayer == BLACK)  print += "b";
+      print += curPlayer;
       
       //add space
       print += " ";
@@ -275,11 +289,11 @@ public class Board{
       int n = 0, type;
       
       for(Piece p: pieces){
-         if(p.getType()*curPlayer > 0) n = p.move(this, moves, n);
+         if(p.color == curPlayer) n = p.genMoves(this, moves, n);
       }
       
-      if(curPlayer == WHITE) n = wKing.move(this, moves, n); 
-      else n = bKing.move(this, moves, n);
+      if(curPlayer == 'w') n = wKing.genMoves(this, moves, n); 
+      else n = bKing.genMoves(this, moves, n);
       
       return n;
    }
@@ -303,5 +317,10 @@ public class Board{
   
    public void subtractCastle(){
       castlecount--;
+   }
+   
+   public void swapCurPlayer(){
+      if(curPlayer == 'w') curPlayer = 'b';
+      else curPlayer = 'w';
    }
 }
