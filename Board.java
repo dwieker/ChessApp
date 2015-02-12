@@ -275,43 +275,11 @@ public class Board{
       int n = 0, type;
       
       for(Piece p: pieces){
-         if((type = p.getType()) * curPlayer > 0){
-            //System.out.print(type + "   ");
-            if(Math.abs(type) == Piece.KNIGHT){
-               n = MoveGen.knightMoves(this, p, moves, n);
-               //System.out.println(n);
-            }
-            else if(Math.abs(type) == Piece.BISHOP){
-               n = MoveGen.checkDiagonals(this, p, moves, n);
-               //System.out.println(n);
-            }
-            else if(Math.abs(type) == Piece.ROOK){
-               n = MoveGen.checkRows(this, p, moves, n); 
-               //System.out.println(n);
-            }
-            
-            else if(Math.abs(type) == Piece.QUEEN){
-               n = MoveGen.checkRows(this, p, moves, n);
-               n = MoveGen.checkDiagonals(this, p, moves, n);
-               //System.out.println(n);
-            }
-            else if(type == Piece.PAWN){
-               n = MoveGen.wPawnMoves(this, p, moves, n);
-               //System.out.println(n);
-            }
-            
-            else if(type == Piece.pawn){
-               n = MoveGen.bPawnMoves(this, p, moves, n);
-               //System.out.println(n);
-            }
-         
-         }
-         
-      
+         if(p.getType()*curPlayer > 0) n = p.move(this, moves, n);
       }
       
-      if(curPlayer == WHITE) n = MoveGen.wKingMoves(this, wKing, moves, n); 
-      else n = MoveGen.bKingMoves(this, bKing, moves, n);
+      if(curPlayer == WHITE) n = wKing.move(this, moves, n); 
+      else n = bKing.move(this, moves, n);
       
       return n;
    }
@@ -331,9 +299,9 @@ public class Board{
    
    public void counts(){
      // System.out.println("EP " + epcount + " castling " + castlecount);
-  }
+   }
   
-  public void subtractCastle(){
-     castlecount--;
-  }
+   public void subtractCastle(){
+      castlecount--;
+   }
 }
