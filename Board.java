@@ -122,7 +122,7 @@ public class Board{
          mh.setPromo();
 
       }
-      else if(squares[m.s1()].getClass() == King.class){
+      else if(squares[m.s1()].getLetter() == 'K'){
          wCastleRights[0] = wCastleRights[1] = false;
          if(m.s1() == 4 && m.s2() == 6){
             squares[5] = squares[7];
@@ -137,7 +137,7 @@ public class Board{
             mh.castled(1);
          }
       }
-      else if(squares[m.s1()].getClass() == King.class){
+      else if(squares[m.s1()].getLetter() == 'k'){
          bCastleRights[0] = bCastleRights[1] = false;
          if(m.s1() == 116 && m.s2() == 118){
             squares[117] = squares[119];

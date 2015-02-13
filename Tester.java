@@ -16,7 +16,7 @@ public class Tester{
       long t1 = System.nanoTime();
       Board b = new Board(POSITION6);
       System.out.println(b.printFEN());
-      System.out.println(perftTest(5,b));
+      System.out.println(perftTest(4,b));
       System.out.println("time: " + (System.nanoTime() - t1)/1000000000.0);
          
    }

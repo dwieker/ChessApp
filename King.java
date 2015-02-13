@@ -43,7 +43,7 @@ public class King extends Piece{
             if(temp == null) 
                continue;
              
-            if(temp.color != color && (temp.getClass() == Rook.class || temp.getClass() == Queen.class || (temp.getClass() == King.class && i - 1 == pos))) 
+            if((temp.getClass() == Rook.class || temp.getClass() == Queen.class) && temp.color != color) 
                return true;
          
             break; 
@@ -59,7 +59,7 @@ public class King extends Piece{
             if(temp == null) 
                continue;
              
-            if(temp.color != color && (temp.getClass() == Bishop.class || temp.getClass() == Queen.class || (temp.getClass() == King.class && i - 17 == pos)))
+            if((temp.getClass() == Bishop.class || temp.getClass() == Queen.class) && temp.color != color)
                return true;
          
             break; 
@@ -87,15 +87,22 @@ public class King extends Piece{
       if( ((pos - 17*c)&0x88) == 0 && board.checkSquare(pos - 17*c) != null && board.checkSquare(pos - 17*c).getClass() == Pawn.class &&  board.checkSquare(pos - 17*c).color != color)
          return true;   
       if( ((pos - 15*c)&0x88) == 0 && board.checkSquare(pos - 15*c) != null && board.checkSquare(pos - 15*c).getClass() == Pawn.class &&  board.checkSquare(pos - 15*c).color != color)
-         return true;   
+         return true;
+         
+      int diff;
+      if (color == 'w')diff = Math.abs(pos - board.bKing().pos);
+      else diff = Math.abs(pos - board.wKing().pos);      
+      if(diff == 1 || diff == 15 || diff == 16 || diff == 17)
+         return true;
              
       return false;
     
    }    
    
    public char getLetter(){
-      if (color == 'w') return 'K';
-      else return 'k';
+      return color == 'w' ? 'K' : 'k';
+      //if (color == 'w') return 'K';
+      //else return 'k';
    }
 
 
