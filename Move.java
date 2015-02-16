@@ -31,15 +31,15 @@ public class Move{
     *
     * @param m The user input of the move.
     */
-   public Move(char[] m){
+   public Move(String m){
       Hashtable<Character, Integer> dict = new Hashtable<Character, Integer>();
       dict.put('a', 1); dict.put('b', 2); dict.put('c', 3); dict.put('d', 4); 
       dict.put('e', 5); dict.put('f', 6); dict.put('g', 7); dict.put('h', 8);
       
-      int x_1 = dict.get(m[0]);
-      int y_1 = dict.get(m[1]);
-      int x_2 = dict.get(m[2]);
-      int y_2 = dict.get(m[3]);
+      int x_1 = dict.get(m.charAt(0));
+      int y_1 = dict.get(m.charAt(1));
+      int x_2 = dict.get(m.charAt(2));
+      int y_2 = dict.get(m.charAt(3));
    
       s1 = y_1 * 16 + x_1;
       s2 = y_2 * 16 + x_2;
@@ -88,10 +88,12 @@ public class Move{
    * @return String representation of move.
    */
    public String toString(){
-      String print = new String();
-      
-      print = "Moved " + s1 + " to " + s2;
-      
-      return print;
+      Hashtable<Integer, Character> dict = new Hashtable<Integer, Character>();
+      dict.put(1, 'a'); dict.put(2, 'b'); dict.put(3, 'c'); dict.put(4, 'd'); 
+      dict.put(5, 'e'); dict.put(6, 'f'); dict.put(7, 'g'); dict.put(8, 'h');
+
+      String r = new String();
+      r += dict.get(s1%16 + 1) + (s1/16) + dict.get(s2%16 + 1) + (s2/16);
+      return r;      
    }
 }
