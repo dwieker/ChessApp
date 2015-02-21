@@ -33,13 +33,13 @@ public class Move{
     */
    public Move(String m){
       Hashtable<Character, Integer> dict = new Hashtable<Character, Integer>();
-      dict.put('a', 1); dict.put('b', 2); dict.put('c', 3); dict.put('d', 4); 
-      dict.put('e', 5); dict.put('f', 6); dict.put('g', 7); dict.put('h', 8);
+      dict.put('a', 0); dict.put('b', 1); dict.put('c', 2); dict.put('d', 3); 
+      dict.put('e', 4); dict.put('f', 5); dict.put('g', 6); dict.put('h', 7);
       
       int x_1 = dict.get(m.charAt(0));
-      int y_1 = dict.get(m.charAt(1));
+      int y_1 = Character.getNumericValue(m.charAt(1)) - 1;
       int x_2 = dict.get(m.charAt(2));
-      int y_2 = dict.get(m.charAt(3));
+      int y_2 = Character.getNumericValue(m.charAt(3)) - 1;
    
       s1 = y_1 * 16 + x_1;
       s2 = y_2 * 16 + x_2;
@@ -92,8 +92,8 @@ public class Move{
       dict.put(1, 'a'); dict.put(2, 'b'); dict.put(3, 'c'); dict.put(4, 'd'); 
       dict.put(5, 'e'); dict.put(6, 'f'); dict.put(7, 'g'); dict.put(8, 'h');
 
-      String r = new String();
-      r += dict.get(s1%16 + 1) + (s1/16) + dict.get(s2%16 + 1) + (s2/16);
+      
+      String r = dict.get(s1%16 + 1) + Integer.toString(s1/16 + 1) + dict.get(s2%16 + 1) + Integer.toString(s2/16 + 1);
       return r;      
    }
 }

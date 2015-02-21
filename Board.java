@@ -13,8 +13,10 @@ public class Board{
    private LinkedList<Piece> pieces; //linked list of our pieces. useful to iterate through and gen moves
    private Piece wKing; 
    private Piece bKing;
+   
+   public Board(){}
       
-   public Board(String FEN){
+   public void setup(String FEN){
       squares = new Piece[128];
       pieces = new LinkedList<Piece>();
       Piece temp;
@@ -84,7 +86,6 @@ public class Board{
    
    
    public MoveHistory movePiece(Move m){
-   
       MoveHistory mh = new MoveHistory(m, bCastleRights, wCastleRights, enPassantSq);
       swapCurPlayer();
       enPassantSq = -1;
@@ -221,7 +222,7 @@ public class Board{
    }
          
    
-   public String printFEN(){
+   public String toString(){
       int blanks = 0;
       String print = new String("");
       
@@ -287,6 +288,7 @@ public class Board{
    
    public int genMoves(Move[] moves){
       int n = 0, type;
+      System.out.println(curPlayer);
       
       for(Piece p: pieces){
          if(p.color == curPlayer) n = p.genMoves(this, moves, n);
