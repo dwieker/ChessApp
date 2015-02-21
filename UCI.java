@@ -11,12 +11,9 @@ public class UCI{
       Boolean playOn = true;
       
       while(playOn){
-         parser = new Scanner(input.nextLine());      
-         while(parser.hasNext() && playOn){
-            token = parser.next();    
-            playOn = handleCommand(token,parser,board);   
-            //System.out.println(board); 
-         }               
+         parser = new Scanner(input.nextLine());          
+         playOn = handleCommand(parser.next(),parser,board);   
+            //System.out.println(board);              
       }                           
    }
    
