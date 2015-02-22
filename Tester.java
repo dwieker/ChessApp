@@ -14,8 +14,13 @@ public class Tester{
       FENtest();
       
       long t1 = System.nanoTime();
-      Board b = new Board(POSITION6);
-      System.out.println(b.printFEN());
+      Board b = new Board();
+      b.setup(Board.STARTFEN);
+      b.movePiece(new Move("d2d8"));
+     // b.movePiece(new Move("b7b6"));
+      
+      System.out.println(AI.eval(b));
+      System.out.println(b);
       System.out.println(perftTest(4,b));
       System.out.println("time: " + (System.nanoTime() - t1)/1000000000.0);
          
@@ -26,48 +31,58 @@ public class Tester{
       String test;
       
       test = "rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b KQkq - 0 1";
-      board = new Board(test);
-      if(!test.equals(board.printFEN())){
+      board = new Board();
+      board.setup(test);
+      if(!test.equals(board.toString())){
          System.out.println("normal start fail");
-         System.out.println(board.printFEN());
+         System.out.println(board.toString());
       }
          
       
       test = "rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b KQk - 0 1";
-      board = new Board(test);
-      if(!test.equals(board.printFEN())) System.out.println("castling fail 1");
+      board = new Board();
+      board.setup(test);
+      if(!test.equals(board.toString())) System.out.println("castling fail 1");
       
       test = "rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b KQq - 0 1";
-      board = new Board(test);
-      if(!test.equals(board.printFEN())) System.out.println("castling fail 2");
+      board = new Board();
+      board.setup(test);
+      if(!test.equals(board.toString())) System.out.println("castling fail 2");
       
       test = "rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b Kkq - 0 1";
-      board = new Board(test);
-      if(!test.equals(board.printFEN())) System.out.println("castling fail 3");
+      board = new Board();
+      board.setup(test);
+      if(!test.equals(board.toString())) System.out.println("castling fail 3");
       
       test = "rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b kq - 0 1";
-      board = new Board(test);
-      if(!test.equals(board.printFEN())) System.out.println("castling fail 4");
+      board = new Board();
+      board.setup(test);
+      if(!test.equals(board.toString())) System.out.println("castling fail 4");
       
       test = "rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b - - 0 1";
-      board = new Board(test);
-      if(!test.equals(board.printFEN())) System.out.println("castling fail 5");
+      board = new Board();
+      board.setup(test);
+      if(!test.equals(board.toString())) System.out.println("castling fail 5");
       
       test = "5q2/8/1K6/8/4N3/8/1k6/7R w - - 0 1";
-      board = new Board(test);
-      if(!test.equals(board.printFEN())) System.out.println("very few pieces 1");
+      board = new Board();
+      board.setup(test);
+      if(!test.equals(board.toString())) System.out.println("very few pieces 1");
       
       test = "8/1k3b2/8/8/1b2P3/8/5K2/8 w - - 0 1";
-      board = new Board(test);
-      if(!test.equals(board.printFEN())) System.out.println("very few pieces 2");
+      board = new Board();
+      board.setup(test);
+      if(!test.equals(board.toString())) System.out.println("very few pieces 2");
       
       test = "R2K3R/8/8/8/8/8/8/r2k3r w KQkq - 0 1";
-      board = new Board(test);
-      if(!test.equals(board.printFEN())) System.out.println("very few pieces 3");
+      board = new Board();
+      board.setup(test);
+      if(!test.equals(board.toString())) System.out.println("very few pieces 3");
       
       test = "R2K3R/8/8/8/8/8/8/r2k3r w KQkq - 0 1";
-      board = new Board(test);
-      if(!test.equals(board.printFEN())) System.out.println("very few pieces 4");
+      board = new Board(); 
+      board.setup(test);
+      if(!test.equals(board.toString())) System.out.println("very few pieces 4");
       
    }
    

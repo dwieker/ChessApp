@@ -10,7 +10,7 @@ public class Board{
    private int enPassantSq = -1; // -1 implies no en passant possible
    private Piece[] squares; //squares of the board. no piece on that square = null
    private int epcount = 0, castlecount = 0;  // for debugging
-   private LinkedList<Piece> pieces; //linked list of our pieces. useful to iterate through and gen moves
+   public LinkedList<Piece> pieces; //linked list of our pieces. useful to iterate through and gen moves
    private Piece wKing; 
    private Piece bKing;
    
@@ -288,8 +288,7 @@ public class Board{
    
    public int genMoves(Move[] moves){
       int n = 0, type;
-      System.out.println(curPlayer);
-      
+          
       for(Piece p: pieces){
          if(p.color == curPlayer) n = p.genMoves(this, moves, n);
       }
@@ -300,7 +299,7 @@ public class Board{
       return n;
    }
    
-   public int curPlayer(){
+   public char curPlayer(){
       return curPlayer;
    }
    

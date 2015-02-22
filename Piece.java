@@ -9,12 +9,22 @@ public abstract class Piece{
    public char color;
    public int pos; // location in the squares array
    public int value;
+   public int[] posBonus;
      
    
    public Piece(char color, int pos, int value){
       this.color = color;
       this.pos = pos;
-      this.value = value;
+      if(color == 'b') this.value = -value;
+      else this.value = value;
+   }
+   
+   public void setPosBonus(int[] pb){
+      posBonus = pb;
+   }
+   
+   public int getPosBonus(){
+      return color == 'w' ? posBonus[pos] : -posBonus[119 - pos];
    }
    
         

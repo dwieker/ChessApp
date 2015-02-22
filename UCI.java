@@ -53,7 +53,7 @@ public class UCI{
    private static void calculateMove(Board board){
       Move[] moves = new Move[264];
       board.genMoves(moves);
-      System.out.println("bestmove " + moves[0]);
+      System.out.println("bestmove " + AI.calculateMove(board, 20));
    }
           
 }
