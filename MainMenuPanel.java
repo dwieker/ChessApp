@@ -10,8 +10,8 @@ public class MainMenuPanel extends JPanel{
 
    public MainMenuPanel(){
    
-      settingsButton = new JButton("Switch to settings");
-      aboutButton = new JButton("Switch to about screen");
+      settingsButton = new JButton("Settings");
+      aboutButton = new JButton("About");
       setLayout(new GridLayout(2,1));
  		add(settingsButton);
 		add(aboutButton);

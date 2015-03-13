@@ -4,7 +4,6 @@ import javax.swing.*;
 public class BoardPanel extends JPanel{
 
    public BoardPanel(){
-      setBackground(Color.BLACK);
       setPreferredSize( new Dimension(500, 500) );
       setLayout(new GridLayout(8,8) );
       
