@@ -3,23 +3,22 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Application{
+public class Application extends JFrame{
 	
-   JFrame frame = new JFrame("Devin-Jesenia Chess Application!");
-	JPanel superPanel = new JPanel();
+   //JFrame frame = new JFrame("Devin-Jesenia Chess Application!");
+	//JPanel superPanel = new JPanel();
 	BoardPanel board = new BoardPanel();
    SidePanel sidePanel = new SidePanel();
    
 	public Application(){
    
-		superPanel.setLayout(new BoxLayout(superPanel, BoxLayout.X_AXIS)); 
-		superPanel.add(board, "board");
-      superPanel.add(sidePanel, "sidepanel");
-		frame.add(superPanel);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      frame.setSize(700,500);
-		frame.pack();
-		frame.setVisible(true);
+		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS)); 
+		getContentPane().add(board, "board");
+      getContentPane().add(sidePanel, "sidepanel");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      setSize(700,500);
+		pack();
+		setVisible(true);
 		
 	}
 
