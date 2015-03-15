@@ -1,0 +1,58 @@
+File opened! 
+uci
+isready
+position
+startpos
+go
+go
+File opened! 
+uci
+isready
+position
+startpos
+go
+File opened! 
+uci
+isready
+position
+startpos
+go
+File opened! 
+uci
+isready
+position
+File opened! 
+uci
+isready
+position
+File opened! 
+is
+ready
+uci
+isready
+position
+File opened! 
+uci
+isready
+position
+File opened! 
+uci
+isready
+startpos
+position
+File opened! 
+uci
+isready
+position
+File opened! 
+uci
+isready
+position
+File opened! 
+uci
+isready
+position
+File opened! 
+position
+File opened! 
+uci
