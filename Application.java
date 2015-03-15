@@ -5,9 +5,7 @@ import java.awt.event.ActionListener;
 
 public class Application extends JFrame{
 	
-   //JFrame frame = new JFrame("Devin-Jesenia Chess Application!");
-	//JPanel superPanel = new JPanel();
-	BoardPanel board = new BoardPanel();
+ 	BoardPanel board = new BoardPanel();
    SidePanel sidePanel = new SidePanel();
    
 	public Application(){

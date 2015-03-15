@@ -9,9 +9,14 @@ public class SquarePanel extends JPanel{
 
    private Image img = null;
    private Color defaultColor;
+   private int row;
+   private int col;
    
    
-   public SquarePanel(){
+   public SquarePanel(int row, int col){
+      this.row = row;
+      this.col = col;
+      
       addMouseListener( 
             new MouseListener(){
                public void mouseClicked(MouseEvent e){ 
@@ -38,8 +43,9 @@ public class SquarePanel extends JPanel{
       return img;
    }
    
-   public void setColor(Color color){
+   public void setDefaultColor(Color color){
       defaultColor = color;
+      setBackground(color);
    }
    
    public Color getColor(){
@@ -52,15 +58,24 @@ public class SquarePanel extends JPanel{
    
    }
    
-   public void resetBackground()
-   {
+   public void resetBackground(){
       setBackground(defaultColor);
    }
    
+   public int row(){
+      return row;
+   }
    
-
+   public int col(){
+      return col;
+   }
    
+   public String toString(){   
+      return "" + (char)(col + 97) + Integer.toString(row + 1);
+   } 
    
+      
+ 
 }
    
    
