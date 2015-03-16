@@ -76,7 +76,7 @@ public class BoardPanel extends JPanel{
          {
             //do nothing
          }
-
+      
          activeSquare.resetBackground();
          
          for(SquarePanel p : allowedSquares)
@@ -95,31 +95,80 @@ public class BoardPanel extends JPanel{
    
    public void movePiece(SquarePanel a, SquarePanel b) throws InvalidMoveException
    {
-      if(b.getBackground().equals(Color.GREEN))
-      {
-         //update internal board
-         Move m = new Move(a.toString() + b.toString());
-         MoveHistory mh = board.movePiece(m);
       
-         Piece p = mh.getCaptured();
-         if(p != null && p.getPos()/16 != b.row()){
-            SquarePanel sq = squares[p.getPos()/16][p.getPos()%16];
-            sq.setImage(null);
-            sq.repaint();
-         }
-         
-         //update image placement
-         b.setImage(a.getImage());
-         b.repaint();
-         a.setImage(null);
-                 
-      }
-      else
+      if(!allowedSquares.contains(b))
       {     
-         System.out.println(b.getBackground());
          throw new InvalidMoveException();
       }
+     
+      b.setImage(a.getImage());
       
+      //update internal board
+      Move m = new Move(a.toString() + b.toString());
+      MoveHistory mh = board.movePiece(m);
+      
+      //just look at mh.getEnPassant instead. math was already handled
+      Piece p = mh.getCaptured();
+      if(p != null && p.getPos()/16 != b.row())
+      {
+         SquarePanel sq = squares[p.getPos()/16][p.getPos()%16];
+         sq.setImage(null);
+         sq.repaint();
+      }
+     
+      //check for castle
+      switch(mh.didCastle())
+      {
+         case -1:
+            break;
+         case 1:
+            squares[0][3].setImage(squares[0][0].getImage());
+            squares[0][0].setImage(null);
+            squares[0][0].repaint();
+            break;
+         case 2:
+            squares[0][5].setImage(squares[0][7].getImage());
+            squares[0][7].setImage(null);
+            squares[0][7].repaint();
+            break;    
+         case 3:
+            squares[0][3].setImage(squares[0][0].getImage());
+            squares[0][0].setImage(null);
+            break;     
+         case 4:
+            squares[0][3].setImage(squares[0][0].getImage());
+            squares[0][0].setImage(null);
+            break;    
+     }
+     
+     //check for pawn promotion
+     if(mh.getPromo())
+     {
+           try
+           {
+               char c = board.checkSquare(7-b.row(), b.col()).color;
+               File file = new File("PieceImages/" + c + "Queen.png");
+               Image img =  ImageIO.read(file);
+               b.setImage(img);
+           }
+            catch(IOException e)
+            {
+               System.out.println(e);
+            }
+            catch(NullPointerException e)
+            {
+               System.out.println(e);
+            }
+              
+     }
+           
+         
+      //update image placement
+      b.repaint();
+      a.setImage(null);
+                 
+      
+          
                      
    }
    
@@ -151,7 +200,7 @@ public class BoardPanel extends JPanel{
          if(board.enPassant() != -1) System.out.println("here2");
          panel = squares[moves[i].s2()/16][moves[i].s2()%16];
          allowedSquares.add(panel);
-         panel.setBackground(Color.GREEN);
+         panel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 5));
       
       }
    

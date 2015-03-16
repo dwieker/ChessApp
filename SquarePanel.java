@@ -60,6 +60,7 @@ public class SquarePanel extends JPanel{
    
    public void resetBackground(){
       setBackground(defaultColor);
+      setBorder(null);
    }
    
    public int row(){
