@@ -21,23 +21,28 @@ public class BoardPanel extends JPanel{
       setPreferredSize( new Dimension(500, 500) );
       setLayout(new GridLayout(8,8));
       
-      for(int i = 0; i < 8; i++){
-         for(int j = 0; j < 8; j++){
+      for(int i = 0; i < 8; i++)
+      {
+         for(int j = 0; j < 8; j++)
+         {
          
             SquarePanel square = new SquarePanel(7 - i, j);
             squares[7 - i][j] = square;
             
-            if(i%2 == 0 ^ j%2 == 0){
+            if(i%2 == 0 ^ j%2 == 0)
+            {
                square.setDefaultColor(Color.GRAY);
             }
-            else{
+            else
+            {
                square.setDefaultColor(Color.WHITE);     
             }
                
             
             Piece p = board.checkSquare(7 - i, j);
             
-            try{
+            try
+            {
                File file = new File("PieceImages/" + p.color + p.getClass().getSimpleName() + ".png");
                Image img =  ImageIO.read(file);
                square.setImage(img);
@@ -83,18 +88,13 @@ public class BoardPanel extends JPanel{
          {
             p.resetBackground();
          }
-         allowedSquares.clear();
-            
-         
-         
-                 
+         allowedSquares.clear();             
          activeSquare = null;
       }
       System.out.println(board);
    }
    
-   public void movePiece(SquarePanel a, SquarePanel b) throws InvalidMoveException
-   {
+   public void movePiece(SquarePanel a, SquarePanel b) throws InvalidMoveException{
       
       if(!allowedSquares.contains(b))
       {     
@@ -107,7 +107,7 @@ public class BoardPanel extends JPanel{
       Move m = new Move(a.toString() + b.toString());
       MoveHistory mh = board.movePiece(m);
       
-      //just look at mh.getEnPassant instead. math was already handled
+      //just look at mh.getEnPassant instead. math was already handled !!!!!!!!!!! FIX
       Piece p = mh.getCaptured();
       if(p != null && p.getPos()/16 != b.row())
       {
@@ -131,7 +131,7 @@ public class BoardPanel extends JPanel{
             squares[0][7].setImage(null);
             squares[0][7].repaint();
             break;    
-         case 3:
+         case 3:    //!!!!!! NOT DONE!!!!!!!!!!!! 
             squares[0][3].setImage(squares[0][0].getImage());
             squares[0][0].setImage(null);
             break;     
@@ -139,28 +139,29 @@ public class BoardPanel extends JPanel{
             squares[0][3].setImage(squares[0][0].getImage());
             squares[0][0].setImage(null);
             break;    
-     }
+      }
      
      //check for pawn promotion
-     if(mh.getPromo())
-     {
-           try
-           {
-               char c = board.checkSquare(7-b.row(), b.col()).color;
-               File file = new File("PieceImages/" + c + "Queen.png");
-               Image img =  ImageIO.read(file);
-               b.setImage(img);
-           }
-            catch(IOException e)
-            {
-               System.out.println(e);
-            }
-            catch(NullPointerException e)
-            {
-               System.out.println(e);
-            }
+      if(mh.getPromo())
+      {
+         try
+         {
+            char c = board.checkSquare(b.row(), b.col()).color;
+            File file = new File("PieceImages/" + c + "Queen.png");
+            Image img =  ImageIO.read(file);
+            b.setImage(img);
+            System.out.println("image changed to queen!");
+         }
+         catch(IOException e)
+         {
+            System.out.println(e);
+         }
+         catch(NullPointerException e)
+         {
+            System.out.println(e);
+         }
               
-     }
+      }
            
          
       //update image placement
@@ -176,19 +177,19 @@ public class BoardPanel extends JPanel{
    {
       //find legal moves
       Move[] moves = new Move[30];
-      Piece p = board.checkSquare(activeSquare.row(), activeSquare.col());
-      int n = p.genMoves(board, moves, 0);
-      if(board.enPassant() > -1)
-         System.out.println(" - " +board.enPassant()+ " - ");
       MoveHistory mh;
       SquarePanel panel;
       
-      for(int i = 0; i < n; i++) System.out.println(moves[i]);
       
+      Piece p = board.checkSquare(activeSquare.row(), activeSquare.col());
+      int n = p.genMoves(board, moves, 0);
+      
+            
       for(int i = 0; i < n; i++)
       {
          mh = board.movePiece(moves[i]);
-         if(board.curPlayer == 'b' ? ((King)(board.wKing)).isChecked(board) : ((King)(board.bKing)).isChecked(board)){
+         if(board.curPlayer == 'b' ? ((King)(board.wKing)).isChecked(board) : ((King)(board.bKing)).isChecked(board))
+         {
             board.unmovePiece(mh);
             continue;
          }
@@ -197,7 +198,6 @@ public class BoardPanel extends JPanel{
             board.unmovePiece(mh);
          }
          
-         if(board.enPassant() != -1) System.out.println("here2");
          panel = squares[moves[i].s2()/16][moves[i].s2()%16];
          allowedSquares.add(panel);
          panel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 5));
