@@ -59,6 +59,7 @@ public class BoardPanel extends JPanel{
    {
       System.out.println(sq.toString());
       
+      //check that it's the correct person's turn
       if(activeSquare == null && sq.getImage() != null && board.checkSquare(sq.row(), sq.col()).color == board.curPlayer)
       {
          setActiveSquare(sq);
