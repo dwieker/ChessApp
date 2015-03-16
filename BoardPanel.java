@@ -99,12 +99,20 @@ public class BoardPanel extends JPanel{
       {
          //update internal board
          Move m = new Move(a.toString() + b.toString());
-         board.movePiece(m);
+         MoveHistory mh = board.movePiece(m);
       
+         Piece p = mh.getCaptured();
+         if(p != null && p.getPos()/16 != b.row()){
+            SquarePanel sq = squares[p.getPos()/16][p.getPos()%16];
+            sq.setImage(null);
+            sq.repaint();
+         }
+         
          //update image placement
          b.setImage(a.getImage());
          b.repaint();
-         a.setImage(null);        
+         a.setImage(null);
+                 
       }
       else
       {     
@@ -121,8 +129,12 @@ public class BoardPanel extends JPanel{
       Move[] moves = new Move[30];
       Piece p = board.checkSquare(activeSquare.row(), activeSquare.col());
       int n = p.genMoves(board, moves, 0);
+      if(board.enPassant() > -1)
+         System.out.println(" - " +board.enPassant()+ " - ");
       MoveHistory mh;
       SquarePanel panel;
+      
+      for(int i = 0; i < n; i++) System.out.println(moves[i]);
       
       for(int i = 0; i < n; i++)
       {
@@ -136,7 +148,7 @@ public class BoardPanel extends JPanel{
             board.unmovePiece(mh);
          }
          
-         
+         if(board.enPassant() != -1) System.out.println("here2");
          panel = squares[moves[i].s2()/16][moves[i].s2()%16];
          allowedSquares.add(panel);
          panel.setBackground(Color.GREEN);

@@ -99,14 +99,14 @@ public class Board{
       }
       else if(squares[m.s1()].getClass() == Pawn.class){ //pawn moved, no capture
          if((m.s2() - m.s1()) % 16 != 0){ //diagoal move. it's an enpassant!
-            taken = m.s2() + curPlayer*16;
+            taken = m.s2() + (curPlayer == 'w' ? 1 : -1)*16;
             epcount++; //for debugging
             mh.setCaptured(squares[taken]);
             pieces.remove(squares[taken]);
             squares[taken] = null;
          }
          else if(Math.abs(m.s2() - m.s1()) == 32){
-            enPassantSq = m.s2() + curPlayer*16;
+            enPassantSq = m.s2() + (curPlayer == 'w' ? 1 : -1)*16;
          }
       }
       
