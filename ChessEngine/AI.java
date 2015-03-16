@@ -1,3 +1,5 @@
+package ChessEngine;
+
 public class AI{
 
    public static int nodes = 0;

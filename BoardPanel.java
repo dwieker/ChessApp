@@ -58,15 +58,24 @@ public class BoardPanel extends JPanel{
    public void handleMouseClick(SquarePanel sq)
    {
       System.out.println(sq.toString());
-      System.out.println(board);
       
-      if(activeSquare == null && sq.getImage() != null)
+      if(activeSquare == null && sq.getImage() != null && board.checkSquare(sq.row(), sq.col()).color == board.curPlayer)
       {
          setActiveSquare(sq);
          fillAllowedSquares();     
       }
       else if(activeSquare != null)
       {
+          //attempt to movePiece
+         try
+         {
+            movePiece(activeSquare, sq);
+         }
+         catch (InvalidMoveException e)
+         {
+            //do nothing
+         }
+
          activeSquare.resetBackground();
          
          for(SquarePanel p : allowedSquares)
@@ -77,18 +86,10 @@ public class BoardPanel extends JPanel{
             
          
          
-         //attempt to movePiece
-         try
-         {
-            movePiece(activeSquare, sq);
-         }
-         catch (InvalidMoveException e)
-         {
-            //do nothing
-         }
-         
+                 
          activeSquare = null;
       }
+      System.out.println(board);
    }
    
    public void movePiece(SquarePanel a, SquarePanel b) throws InvalidMoveException
@@ -106,6 +107,7 @@ public class BoardPanel extends JPanel{
       }
       else
       {     
+         System.out.println(b.getBackground());
          throw new InvalidMoveException();
       }
       
