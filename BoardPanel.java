@@ -131,13 +131,15 @@ public class BoardPanel extends JPanel{
             squares[0][7].setImage(null);
             squares[0][7].repaint();
             break;    
-         case 3:    //!!!!!! NOT DONE!!!!!!!!!!!! 
-            squares[0][3].setImage(squares[0][0].getImage());
-            squares[0][0].setImage(null);
+         case 3:    
+            squares[7][3].setImage(squares[7][0].getImage());
+            squares[7][0].setImage(null);
+            squares[7][0].repaint();
             break;     
          case 4:
-            squares[0][3].setImage(squares[0][0].getImage());
-            squares[0][0].setImage(null);
+            squares[7][5].setImage(squares[7][7].getImage());
+            squares[7][7].setImage(null);
+            squares[7][7].repaint();
             break;    
       }
      
@@ -162,15 +164,10 @@ public class BoardPanel extends JPanel{
          }
               
       }
-           
-         
-      //update image placement
+                
       b.repaint();
       a.setImage(null);
-                 
-      
-          
-                     
+                                    
    }
    
    public void fillAllowedSquares()
