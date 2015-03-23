@@ -63,6 +63,8 @@ public class BoardPanel extends JPanel{
    public void handleMouseClick(SquarePanel sq)
    {
       System.out.println(sq.toString());
+      System.out.println(SettingsPanel.settings.getInt("depth", -1));
+      
       
       //check that it's the correct person's turn
       if(activeSquare == null && sq.getImage() != null && board.checkSquare(sq.row(), sq.col()).color == board.curPlayer)

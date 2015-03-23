@@ -7,7 +7,7 @@ public class Application extends JFrame{
 	
  	BoardPanel board = new BoardPanel();
    SidePanel sidePanel = new SidePanel();
-   
+   EngineInterface eInterface;   
 	public Application(){
    
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS)); 
@@ -17,6 +17,9 @@ public class Application extends JFrame{
       setSize(700,500);
 		pack();
 		setVisible(true);
+      
+      eInterface = new EngineInterface(board, "engines/stockfish");
+      new Thread(eInterface).start();
 		
 	}
 
