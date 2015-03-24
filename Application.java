@@ -20,7 +20,7 @@ public class Application extends JFrame{
 		pack();
 		setVisible(true);
       
-      eInterface = new EngineInterface(board, "engines/stockfish");
+      eInterface = new EngineInterface(board);
     
       
           		

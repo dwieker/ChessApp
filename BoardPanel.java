@@ -9,10 +9,10 @@ import java.util.*;
 
 public class BoardPanel extends JPanel{
 
-   SquarePanel[][] squares = new SquarePanel[8][8];
-   SquarePanel activeSquare = null;
-   ArrayList<SquarePanel> allowedSquares = new ArrayList<SquarePanel>();
-   Board board;
+   public SquarePanel[][] squares = new SquarePanel[8][8];
+   public SquarePanel activeSquare = null;
+   public ArrayList<SquarePanel> allowedSquares = new ArrayList<SquarePanel>();
+   public Board board;
    
    
    public BoardPanel()
@@ -78,51 +78,12 @@ public class BoardPanel extends JPanel{
          }
                        
          paintImmediately(0,0,getWidth(),getHeight());
-         engineMove();
+         EngineInterface.engineMove();
          
       }
  
-   }
-   
-   public void engineMove()
-   {
-      EngineInterface.pipe("position fen " + board.toString());
-      EngineInterface.pipe("go depth " + SettingsMenu.settings.getInt("depth", 1));
-      
-      String response;
-      try
-      {
-      
-         do{
-            response = EngineInterface.in.readLine();
-            System.out.println(response);
-         }while(!response.split(" ")[0].equals("bestmove"));
-         
-         response = response.split(" ")[1];
-         SquarePanel a = squares[Character.getNumericValue(response.charAt(1)) - 1][response.charAt(0) - 'a'];
-         setActiveSquare(a);
-         SquarePanel b = squares[Character.getNumericValue(response.charAt(3)) - 1][response.charAt(2) - 'a'];
-      
-         try
-         {
-            movePiece(a,b);
-         }
-         catch (InvalidMoveException e)
-         {
-            System.out.println("engine fucked up");
-         }
-                  
-      }
-      catch(IOException e)
-      {
-      
-      
-      }
-      
-      
-   
-   
-   }
+   }         
+  
     
    
    public void movePiece(SquarePanel a, SquarePanel b) throws InvalidMoveException{

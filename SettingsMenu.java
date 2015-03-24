@@ -64,7 +64,7 @@ public class SettingsMenu extends JMenu{
       
    
       //add button to invoke depth popup
-      depthSearchButton = new JMenuItem("Search Depth");
+      depthSearchButton = new JMenuItem("Set Search Depth");
       depthSearchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				popup.show(getParent().getParent(), 150, 200);
@@ -74,7 +74,8 @@ public class SettingsMenu extends JMenu{
       
       
            
-      add(depthSearchButton);      
+      add(depthSearchButton);
+      addSeparator();      
       add(allowedMovesCheckBox);
    
       
