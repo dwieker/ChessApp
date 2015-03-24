@@ -27,7 +27,7 @@ public class SettingsMenu extends JMenu{
            
         
       //add check box
-      allowedMovesCheckBox = new JCheckBoxMenuItem("Show allowed moves", false); 
+      allowedMovesCheckBox = new JCheckBoxMenuItem("Show allowed moves", settings.getBoolean("showPossibleMoves",false)); 
       allowedMovesCheckBox.addItemListener(
             new ItemListener() {
                public void itemStateChanged(ItemEvent e) {
