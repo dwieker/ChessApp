@@ -45,8 +45,9 @@ public class SettingsMenu extends JMenu{
       //create popup object
       popup = new JPopupMenu();
       popup.setPopupSize(200,60);
+      popup.setBorderPainted(true);
       
-      JSlider slider = new JSlider(1,20,10);
+      JSlider slider = new JSlider(1,20,settings.getInt("depth", 10));
       slider.setMajorTickSpacing(2);
       slider.setSnapToTicks(true);
       slider.setPaintLabels(true);

@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class EngineInterface implements Runnable{
+public class EngineInterface{
    
    public static BufferedReader in;
    public static BufferedWriter out;
@@ -17,6 +17,12 @@ public class EngineInterface implements Runnable{
          in = new BufferedReader( new InputStreamReader(p.getInputStream()) );
          out = new BufferedWriter( new OutputStreamWriter(p.getOutputStream()));
 
+
+        pipe("uci");
+        handleIDandOptions();           
+        pipe("isready");
+        print(in.readLine());
+        
       }
       catch (IOException e)
       {
@@ -37,28 +43,9 @@ public class EngineInterface implements Runnable{
       catch(IOException e)
       {
       }
-      
-      
+          
    }
-   
-   public void run()
-   {     
       
-      pipe("uci");
-      handleIDandOptions();           
-      pipe("isready");
-      
-      try
-      {
-         print(in.readLine());
-      }
-      catch (IOException e){}
-       
-    
-       
-     
-   }
-   
    public static void print(String msg)
    {
       System.out.println(msg);

@@ -44,7 +44,9 @@ public class BoardPanel extends JPanel{
          
       }
    
-      resetBoard();
+      setBoard();
+      paintImmediately(0,0,getWidth(),getHeight());
+
    }
    
    public void handleMouseClick(SquarePanel sq)
@@ -72,30 +74,14 @@ public class BoardPanel extends JPanel{
          }
          catch (InvalidMoveException e)
          {
-            activeSquare.resetBackground();   
-            for(SquarePanel p : allowedSquares)
-            {
-               p.resetBackground();
-            }
-            allowedSquares.clear();             
-            activeSquare = null;
-            //repaint();
             return;
          }
-              
-         activeSquare.resetBackground();   
-         for(SquarePanel p : allowedSquares)
-         {
-            p.resetBackground();
-         }
-         allowedSquares.clear();             
-         activeSquare = null;
-         
+                       
          paintImmediately(0,0,getWidth(),getHeight());
          engineMove();
          
       }
-      System.out.println(board);
+ 
    }
    
    public void engineMove()
@@ -113,7 +99,6 @@ public class BoardPanel extends JPanel{
          }while(!response.split(" ")[0].equals("bestmove"));
          
          response = response.split(" ")[1];
-         System.out.println(response);
          SquarePanel a = squares[Character.getNumericValue(response.charAt(1)) - 1][response.charAt(0) - 'a'];
          setActiveSquare(a);
          SquarePanel b = squares[Character.getNumericValue(response.charAt(3)) - 1][response.charAt(2) - 'a'];
@@ -126,16 +111,11 @@ public class BoardPanel extends JPanel{
          {
             System.out.println("engine fucked up");
          }
-         finally
-         {
-            allowedSquares.clear();             
-            activeSquare = null;
-         }
-         
-         
+                  
       }
       catch(IOException e)
       {
+      
       
       }
       
@@ -146,6 +126,15 @@ public class BoardPanel extends JPanel{
     
    
    public void movePiece(SquarePanel a, SquarePanel b) throws InvalidMoveException{
+      
+      //remove all the coloring
+      activeSquare.resetBackground();   
+      for(SquarePanel panel : allowedSquares)
+      {
+         panel.resetBackground();
+      }           
+      activeSquare = null;
+   
       
       if(!allowedSquares.contains(b))
       {     
@@ -222,10 +211,13 @@ public class BoardPanel extends JPanel{
       a.repaint();
                                     
    }
-   
-   public void fillAllowedMoves()
+      
+   public void setActiveSquare(SquarePanel sq)
    {
+      activeSquare = sq;
+      
       //find legal moves
+      allowedSquares.clear();  
       Move[] moves = new Move[30];
       MoveHistory mh;
       SquarePanel panel;
@@ -243,25 +235,16 @@ public class BoardPanel extends JPanel{
             board.unmovePiece(mh);
             continue;
          }
-         else
-         {
-            board.unmovePiece(mh);
-         }
-         
+        
+         board.unmovePiece(mh); 
          panel = squares[moves[i].s2()/16][moves[i].s2()%16];
          allowedSquares.add(panel);
                
       }
-   
+
    }
    
-   public void setActiveSquare(SquarePanel sq)
-   {
-      activeSquare = sq;
-      fillAllowedMoves(); 
-   }
-   
-   public void resetBoard()
+   public void setBoard()
    {
          
       board.setup(Board.STARTFEN);
@@ -270,10 +253,8 @@ public class BoardPanel extends JPanel{
       {
          for(int j = 0; j < 8; j++)
          {
-         
-                           
-            Piece p = board.checkSquare(7 - i, j);
-            
+                                
+            Piece p = board.checkSquare(7 - i, j);         
             try
             {
                File file = new File("PieceImages/" + p.color + p.getClass().getSimpleName() + ".png");

@@ -13,7 +13,7 @@ public class MenuBar extends JMenuBar
       menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				EngineInterface.pipe("ucinewgame");
-            EngineInterface.board.resetBoard();
+            EngineInterface.board.setBoard();
 			}
 		});
       
