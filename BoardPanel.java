@@ -15,9 +15,10 @@ public class BoardPanel extends JPanel{
    Board board;
    
    
-   public BoardPanel(){
+   public BoardPanel()
+   {
       board = new Board();
-      board.setup(Board.STARTFEN);
+      
       setPreferredSize( new Dimension(500, 500) );
       setLayout(new GridLayout(8,8));
       
@@ -37,64 +38,112 @@ public class BoardPanel extends JPanel{
             {
                square.setDefaultColor(Color.WHITE);     
             }
-               
-            
-            Piece p = board.checkSquare(7 - i, j);
-            
-            try
-            {
-               File file = new File("PieceImages/" + p.color + p.getClass().getSimpleName() + ".png");
-               Image img =  ImageIO.read(file);
-               square.setImage(img);
-            }
-            catch(IOException e){
-               //do nothing
-            }
-            catch(NullPointerException e){
-               //do nothing
-            }
-            
+                           
             add(square);
          }
          
       }
+   
+      resetBoard();
    }
    
    public void handleMouseClick(SquarePanel sq)
    {
-      System.out.println(sq.toString());
-      System.out.println(SettingsPanel.settings.getInt("depth", -1));
-      
-      
+            
       //check that it's the correct person's turn
       if(activeSquare == null && sq.getImage() != null && board.checkSquare(sq.row(), sq.col()).color == board.curPlayer)
       {
          setActiveSquare(sq);
-         fillAllowedSquares();     
+         sq.setBackground(Color.YELLOW);
+         if(SettingsMenu.settings.getBoolean("showPossibleMoves", false))
+         {
+            for(SquarePanel s : allowedSquares)
+            {
+               s.setBorder(BorderFactory.createLineBorder(Color.GREEN, 5));
+            }    
+         }
       }
       else if(activeSquare != null)
       {
           //attempt to movePiece
          try
          {
-            movePiece(activeSquare, sq);
+            movePiece(activeSquare, sq);    
          }
          catch (InvalidMoveException e)
          {
-            //do nothing
+            activeSquare.resetBackground();   
+            for(SquarePanel p : allowedSquares)
+            {
+               p.resetBackground();
+            }
+            allowedSquares.clear();             
+            activeSquare = null;
+            //repaint();
+            return;
          }
-      
-         activeSquare.resetBackground();
-         
+              
+         activeSquare.resetBackground();   
          for(SquarePanel p : allowedSquares)
          {
             p.resetBackground();
          }
          allowedSquares.clear();             
          activeSquare = null;
+         
+         paintImmediately(0,0,getWidth(),getHeight());
+         engineMove();
+         
       }
       System.out.println(board);
    }
+   
+   public void engineMove()
+   {
+      EngineInterface.pipe("position fen " + board.toString());
+      EngineInterface.pipe("go depth " + SettingsMenu.settings.getInt("depth", 1));
+      
+      String response;
+      try
+      {
+      
+         do{
+            response = EngineInterface.in.readLine();
+            System.out.println(response);
+         }while(!response.split(" ")[0].equals("bestmove"));
+         
+         response = response.split(" ")[1];
+         System.out.println(response);
+         SquarePanel a = squares[Character.getNumericValue(response.charAt(1)) - 1][response.charAt(0) - 'a'];
+         setActiveSquare(a);
+         SquarePanel b = squares[Character.getNumericValue(response.charAt(3)) - 1][response.charAt(2) - 'a'];
+      
+         try
+         {
+            movePiece(a,b);
+         }
+         catch (InvalidMoveException e)
+         {
+            System.out.println("engine fucked up");
+         }
+         finally
+         {
+            allowedSquares.clear();             
+            activeSquare = null;
+         }
+         
+         
+      }
+      catch(IOException e)
+      {
+      
+      }
+      
+      
+   
+   
+   }
+    
    
    public void movePiece(SquarePanel a, SquarePanel b) throws InvalidMoveException{
       
@@ -103,7 +152,6 @@ public class BoardPanel extends JPanel{
          throw new InvalidMoveException();
       }
      
-      b.setImage(a.getImage());
       
       //update internal board
       Move m = new Move(a.toString() + b.toString());
@@ -167,12 +215,15 @@ public class BoardPanel extends JPanel{
               
       }
                 
+      
+      b.setImage(a.getImage());
+      a.setImage(null);   
       b.repaint();
-      a.setImage(null);
+      a.repaint();
                                     
    }
    
-   public void fillAllowedSquares()
+   public void fillAllowedMoves()
    {
       //find legal moves
       Move[] moves = new Move[30];
@@ -199,16 +250,48 @@ public class BoardPanel extends JPanel{
          
          panel = squares[moves[i].s2()/16][moves[i].s2()%16];
          allowedSquares.add(panel);
-         panel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 5));
-      
+               
       }
    
    }
    
    public void setActiveSquare(SquarePanel sq)
    {
-      sq.setBackground(Color.YELLOW);
       activeSquare = sq;
+      fillAllowedMoves(); 
+   }
+   
+   public void resetBoard()
+   {
+         
+      board.setup(Board.STARTFEN);
+            
+      for(int i = 0; i < 8; i++)
+      {
+         for(int j = 0; j < 8; j++)
+         {
+         
+                           
+            Piece p = board.checkSquare(7 - i, j);
+            
+            try
+            {
+               File file = new File("PieceImages/" + p.color + p.getClass().getSimpleName() + ".png");
+               Image img =  ImageIO.read(file);
+               squares[7 - i][j].setImage(img);
+            }
+            catch(IOException e){
+               //do nothing
+            }
+            catch(NullPointerException e){
+               squares[7 - i][j].setImage(null);
+            }
+            
+         }
+         
+      }
+      repaint();
+   
    }
    
    

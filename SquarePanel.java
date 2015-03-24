@@ -37,6 +37,7 @@ public class SquarePanel extends JPanel{
       
       //System.out.println(img);
       this.img = img;
+ 
    }
    
    public Image getImage(){

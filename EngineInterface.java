@@ -2,9 +2,10 @@ import java.io.*;
 import java.util.*;
 
 public class EngineInterface implements Runnable{
+   
    public static BufferedReader in;
    public static BufferedWriter out;
-   private BoardPanel board;
+   public static BoardPanel board;
    
    
    public EngineInterface(BoardPanel board, String enginePath)
@@ -25,7 +26,7 @@ public class EngineInterface implements Runnable{
          
    } 
     
-   public void pipe(String msg)
+   public static void pipe(String msg)
    {
       try
       {
@@ -44,44 +45,44 @@ public class EngineInterface implements Runnable{
    {     
       
       pipe("uci");
-      flushInput();
-            
+      handleIDandOptions();           
       pipe("isready");
-      flushInput();
       
-      //pipe("position startpos");
-      //pipe("go depth 1");
-      
-
-      
+      try
+      {
+         print(in.readLine());
+      }
+      catch (IOException e){}
+       
+    
+       
      
-      
-      
-      
-        
-   
    }
    
-   public void print(String msg)
+   public static void print(String msg)
    {
       System.out.println(msg);
    }
    
-   public void flushInput()
+      
+   public void handleIDandOptions()
    {
+      String response;
+      
       try
       {
-         while(in.ready())
+         while(!(response = in.readLine()).equals("uciok"))
          {
-            print(in.readLine());  
+            //process the input!
+            print(response);
          }
-      }              
-      catch(IOException e)
-      {
       }
-
-         
-            
+      catch (IOException e){}
+      finally
+      {
+         return;
+      }
+       
    }
     
 
