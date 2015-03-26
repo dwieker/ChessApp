@@ -18,11 +18,14 @@ public class SettingsMenu extends JMenu{
    JPopupMenu popup;
    JMenuItem depthSearchButton;
    
+   
    public static Preferences settings;
    
 
    public SettingsMenu(){
       super("Settings");
+      
+  
       settings = Preferences.userRoot().node("Settings");
            
         

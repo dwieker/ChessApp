@@ -13,11 +13,13 @@ public class BoardPanel extends JPanel{
    public SquarePanel activeSquare = null;
    public ArrayList<SquarePanel> allowedSquares = new ArrayList<SquarePanel>();
    public Board board;
+   public EngineInterface eInterface;
    
    
-   public BoardPanel()
+   public BoardPanel(EngineInterface e)
    {
       board = new Board();
+      eInterface = e;
       
       setPreferredSize( new Dimension(500, 500) );
       setLayout(new GridLayout(8,8));
@@ -78,7 +80,7 @@ public class BoardPanel extends JPanel{
          }
                        
          paintImmediately(0,0,getWidth(),getHeight());
-         EngineInterface.engineMove();
+         eInterface.getEngineMove();
          
       }
  
@@ -234,6 +236,11 @@ public class BoardPanel extends JPanel{
       }
       repaint();
    
+   }
+   
+   public void attatchEngineInterface(EngineInterface e)
+   {
+      eInterface = e;
    }
    
    

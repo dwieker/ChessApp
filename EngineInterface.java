@@ -5,24 +5,26 @@ public class EngineInterface{
    
    public static BufferedReader in;
    public static BufferedWriter out;
-   public static BoardPanel boardPanel;
+   public BoardPanel boardPanel;
+   public Log outputLog;
    
    
-   public EngineInterface(BoardPanel board)
-   {
-      this.boardPanel = board;    
-   } 
+   public EngineInterface(){} 
     
-   public static void pipe(String msg)
+   public void pipe(String msg)
    {
       try
       {
-         print(msg);
+         outputLog.addText(msg);
          out.write(msg +"\n");
          out.flush();
       }
       catch(IOException e)
       {
+      }
+      catch(NullPointerException e)
+      {
+         //there's no engine connected!
       }
           
    }
@@ -40,9 +42,8 @@ public class EngineInterface{
       try
       {
          while(!(response = in.readLine()).equals("uciok"))
-         {
-            //process the input!
-            print(response);
+         {       
+            Log.addText(response);
          }
       }
       catch (IOException e){}
@@ -53,7 +54,7 @@ public class EngineInterface{
        
    }
    
-   public static void loadEngine(String enginePath)
+   public void loadEngine(String enginePath)
    {
       try
       {
@@ -62,6 +63,7 @@ public class EngineInterface{
          out = new BufferedWriter( new OutputStreamWriter(p.getOutputStream()));
 
 
+        print ("uci");
         pipe("uci");
         handleIDandOptions();           
         pipe("isready");
@@ -75,13 +77,13 @@ public class EngineInterface{
    }
    
    
-   public static void engineMove()
+   public void getEngineMove()
    {
       if(out == null || in == null) return;
       
       
-      EngineInterface.pipe("position fen " + boardPanel.board.toString());
-      EngineInterface.pipe("go depth " + SettingsMenu.settings.getInt("depth", 1));
+      pipe("position fen " + boardPanel.board.toString());
+      pipe("go depth " + SettingsMenu.settings.getInt("depth", 1));
       
       String response;
       try
@@ -89,7 +91,7 @@ public class EngineInterface{
       
          do{
             response = in.readLine();
-            System.out.println(response);
+            Log.addText(response);
          }while(!response.split(" ")[0].equals("bestmove"));
          
          response = response.split(" ")[1];
@@ -114,6 +116,16 @@ public class EngineInterface{
       }
       
    
+   }
+   
+   public void attatchBoard(BoardPanel board)
+   {
+      this.boardPanel = board;
+   }
+   
+   public void attatchLog(Log log)
+   {
+      this.outputLog = log;
    }
 
     

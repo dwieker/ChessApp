@@ -5,35 +5,40 @@ import java.awt.event.ActionListener;
 
 public class Application extends JFrame{
 	
- 	BoardPanel board = new BoardPanel();
-   MenuBar menuBar = new MenuBar();
+   BoardPanel board;
+   MenuBar menuBar;
    EngineInterface eInterface;
       
-	public Application(){
+   public Application(){
         
-		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS)); 
-		getContentPane().add(board, "board");
+      eInterface = new EngineInterface();
+      board = new BoardPanel(eInterface);
+      eInterface.attatchBoard(board);
+      menuBar = new MenuBar(eInterface);
+      
+     
+      
+      getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS)); 
+      getContentPane().add(board, "board");
       setJMenuBar(menuBar);
       
- 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       setSize(700,500);
-		pack();
-		setVisible(true);
-      
-      eInterface = new EngineInterface(board);
-    
-      
+      pack();
+      setVisible(true);
+          
           		
-	}
+   }
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new Application();
-			}
-		});
-	}
+   public static void main(String[] args) {
+      SwingUtilities.invokeLater(
+            new Runnable() {
+               @Override
+               public void run() {
+                  new Application();
+               }
+            });
+   }
    
      
 
