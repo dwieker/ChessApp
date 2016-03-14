@@ -60,7 +60,7 @@ public class MenuBar extends JMenuBar
       menu = new JMenu("View");
       
       //add gui-engine log window and button
-      Log commLog = new Log();
+      final Log commLog = new Log();
       eInterface.attatchLog(commLog);
       commLog.setSize(600, 300);        
       menuItem = new JMenuItem("Log");

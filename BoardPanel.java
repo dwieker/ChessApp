@@ -225,7 +225,8 @@ public class BoardPanel extends JPanel{
                squares[7 - i][j].setImage(img);
             }
             catch(IOException e){
-               //do nothing
+               System.out.println(e);
+               throw new RuntimeException("Could not load piece images");
             }
             catch(NullPointerException e){
                squares[7 - i][j].setImage(null);

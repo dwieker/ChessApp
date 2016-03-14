@@ -46,12 +46,7 @@ public class EngineInterface{
             Log.addText(response);
          }
       }
-      catch (IOException e){}
-      finally
-      {
-         return;
-      }
-       
+      catch (IOException e){} 
    }
    
    public void loadEngine(String enginePath)
@@ -62,8 +57,6 @@ public class EngineInterface{
          in = new BufferedReader( new InputStreamReader(p.getInputStream()) );
          out = new BufferedWriter( new OutputStreamWriter(p.getOutputStream()));
 
-
-        print ("uci");
         pipe("uci");
         handleIDandOptions();           
         pipe("isready");
@@ -73,6 +66,7 @@ public class EngineInterface{
       catch (IOException e)
       {
          System.out.println("Error loading engine.");
+         System.out.println(e);
       }
    }
    
@@ -105,7 +99,7 @@ public class EngineInterface{
          }
          catch (Exception e)
          {
-            System.out.println("engine fucked up");
+            Log.addText("engine fucked up");
          }
                   
       }

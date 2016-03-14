@@ -17,7 +17,6 @@ public class Application extends JFrame{
       menuBar = new MenuBar(eInterface);
       
      
-      
       getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS)); 
       getContentPane().add(board, "board");
       setJMenuBar(menuBar);
